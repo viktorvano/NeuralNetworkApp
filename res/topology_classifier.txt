@@ -1,0 +1,5 @@
+input layer: 9,
+hidden layer: 7,
+hidden layer: 6,
+hidden layer: 5,
+output layer: 4,

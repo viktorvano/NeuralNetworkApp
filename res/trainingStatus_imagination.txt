@@ -1,0 +1,2 @@
+2022-06-12T21:39:42.218+02:00[Europe/Prague]
+Average Loss: 3.869913E-4
