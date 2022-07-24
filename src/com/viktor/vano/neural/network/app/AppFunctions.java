@@ -26,7 +26,7 @@ public class AppFunctions {
             if (topologyFile != null) {
                 System.out.println("File: " + topologyFile.getPath());
                 String basePath = "";
-                String fileNaming = "";
+                String fileNamingConvention = "";
                 try{
                     String[] strings = topologyFile.getPath().split("topology_");
 
@@ -36,11 +36,11 @@ public class AppFunctions {
                         customPrompt("File Chooser", "You have chosen an incorrect topology file: "
                                 + topologyFile.getPath(), Alert.AlertType.WARNING);
 
-                    strings = strings[1].split(".");
-                    if(strings.length == 2 && strings[0].length() > 0)
-                        fileNaming = strings[0];
+                    strings = strings[1].split(".txt");
+                    if(strings.length == 1 && strings[0].length() > 0)
+                        fileNamingConvention = strings[0];
                     else
-                        customPrompt("File Chooser", "You have chosen an incorrect topology file: "
+                        customPrompt("File Chooser", "Cannot determine the file naming convention from the topology file: "
                                 + topologyFile.getPath(), Alert.AlertType.WARNING);
                 }catch (Exception e)
                 {
@@ -54,7 +54,47 @@ public class AppFunctions {
                 else
                     labelTopologyFile.setText(topologyFile.getPath());
 
-                trainingFile = new File(basePath + "training_" + fileNaming + ".csv");
+                trainingFile = new File(basePath + "training_" + fileNamingConvention + ".csv");
+                if(!trainingFile.canRead())
+                {
+                    labelTrainingFile.setText("Training file not selected.");
+                    customPrompt("File Chooser", "Training file can not be read: "
+                            + trainingFile.getPath(), Alert.AlertType.WARNING);
+                }else
+                {
+                    if(trainingFile.getPath().length() > 50)
+                        labelTrainingFile.setText("..." + trainingFile.getPath().substring(trainingFile.getPath().length()-50));
+                    else
+                        labelTrainingFile.setText(trainingFile.getPath());
+                }
+
+                trainingStatusFile = new File(basePath + "trainingStatus_" + fileNamingConvention + ".txt");
+                if(!trainingStatusFile.canRead())
+                {
+                    labelTrainingStatusFile.setText("Status file not selected.");
+                    customPrompt("File Chooser", "Training status file can not be read: "
+                            + trainingStatusFile.getPath(), Alert.AlertType.WARNING);
+                }else
+                {
+                    if(trainingStatusFile.getPath().length() > 50)
+                        labelTrainingStatusFile.setText("..." + trainingStatusFile.getPath().substring(trainingStatusFile.getPath().length()-50));
+                    else
+                        labelTrainingStatusFile.setText(trainingStatusFile.getPath());
+                }
+
+                weightsFile = new File(basePath + "weights_" + fileNamingConvention + ".dat");
+                if(!weightsFile.canRead())
+                {
+                    labelWeightsFile.setText("Weights file not selected.");
+                    customPrompt("File Chooser", "Training status file can not be read: "
+                            + weightsFile.getPath(), Alert.AlertType.WARNING);
+                }else
+                {
+                    if(weightsFile.getPath().length() > 50)
+                        labelWeightsFile.setText("..." + weightsFile.getPath().substring(weightsFile.getPath().length()-50));
+                    else
+                        labelWeightsFile.setText(weightsFile.getPath());
+                }
             }
         });
         pane.getChildren().add(buttonFile);
