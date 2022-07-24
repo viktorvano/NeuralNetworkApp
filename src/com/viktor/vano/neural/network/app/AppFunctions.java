@@ -1,69 +1,90 @@
 package com.viktor.vano.neural.network.app;
 
+import com.sun.istack.internal.NotNull;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.File;
 
+import static com.viktor.vano.neural.network.app.GUI.GUI.customPrompt;
 import static com.viktor.vano.neural.network.app.Variables.*;
-import static com.viktor.vano.neural.network.app.GUI.GUI.*;
 
 public class AppFunctions {
     public static void initializeLayout()
     {
         buttonFile = new Button("File");
         buttonFile.setLayoutX(stageWidth*0.05);
-        buttonFile.setLayoutY(stageHeight*0.20);
+        buttonFile.setLayoutY(stageHeight*0.05);
         buttonFile.setOnAction(event -> {
-            file = fileChooser.showOpenDialog(stageReference);
-            if (file != null) {
-                System.out.println("File: " + file.getPath());
-                /*try {
-                    fileSize = Files.size(Paths.get(file.getPath()));
-                    labelFileSize.setText("File size: " + fileSize + " Bytes");
-                    progressBarMemory.setProgress(fileSize/22528.0);
-                    labelFileSizeBar.setText(Math.round((fileSize/22528.0)*10000.0)/100.0 + " % of 22 528 Byte Memory");
-                    binaryContent = new byte[(int) fileSize];
-                    InputStream inputStream = new FileInputStream(file);
-                    inputStream.read(binaryContent);
-                    readChars = 0;
-                    if(fileSize > 22528)
-                        customPrompt("File Error",
-                                "File is too big: " + fileSize + " Bytes\nThat is " +
-                                        (Math.round((fileSize/22528.0)*10000.0)/100.0)
-                                        + " % of 22 528 Byte Memory", Alert.AlertType.ERROR);
-                } catch (IOException e) {
+            topologyFile = fileChooser.showOpenDialog(stageReference);
+            if (topologyFile != null) {
+                System.out.println("File: " + topologyFile.getPath());
+                String basePath = "";
+                String fileNaming = "";
+                try{
+                    String[] strings = topologyFile.getPath().split("topology_");
+
+                    if(strings.length == 2 && strings[0].length() > 0)
+                        basePath = strings[0];
+                    else
+                        customPrompt("File Chooser", "You have chosen an incorrect topology file: "
+                                + topologyFile.getPath(), Alert.AlertType.WARNING);
+
+                    strings = strings[1].split(".");
+                    if(strings.length == 2 && strings[0].length() > 0)
+                        fileNaming = strings[0];
+                    else
+                        customPrompt("File Chooser", "You have chosen an incorrect topology file: "
+                                + topologyFile.getPath(), Alert.AlertType.WARNING);
+                }catch (Exception e)
+                {
                     e.printStackTrace();
-                }*/
-                if(file.getPath().length() > 50)
-                    labelFile.setText("..." + file.getPath().substring(file.getPath().length()-50));
+                    customPrompt("File Chooser", "Something went wrong picking a topology file: "
+                            + topologyFile.getPath(), Alert.AlertType.ERROR);
+                }
+
+                if(topologyFile.getPath().length() > 50)
+                    labelTopologyFile.setText("..." + topologyFile.getPath().substring(topologyFile.getPath().length()-50));
                 else
-                    labelFile.setText(file.getPath());
-                //buttonFlash.setDisable(fileSize == 0 || btnConnect.getText().equals("Connect"));
+                    labelTopologyFile.setText(topologyFile.getPath());
+
+                trainingFile = new File(basePath + "training_" + fileNaming + ".csv");
             }
         });
         pane.getChildren().add(buttonFile);
 
-        labelFile = new Label("Please select a file.");
-        labelFile.setFont(Font.font("Arial", 20));
-        labelFile.setLayoutX(stageWidth*0.12);
-        labelFile.setLayoutY(stageHeight*0.205);
-        pane.getChildren().add(labelFile);
+        labelTopologyFile = new Label("Please select a topology file.");
+        labelTopologyFile.setFont(Font.font("Arial", 20));
+        labelTopologyFile.setLayoutX(stageWidth*0.12);
+        labelTopologyFile.setLayoutY(stageHeight*0.05);
+        pane.getChildren().add(labelTopologyFile);
+
+        labelTrainingFile = new Label("Training file not selected.");
+        labelTrainingFile.setFont(Font.font("Arial", 20));
+        labelTrainingFile.setLayoutX(stageWidth*0.12);
+        labelTrainingFile.setLayoutY(stageHeight*0.10);
+        pane.getChildren().add(labelTrainingFile);
+
+        labelTrainingStatusFile = new Label("Status file not selected.");
+        labelTrainingStatusFile.setFont(Font.font("Arial", 20));
+        labelTrainingStatusFile.setLayoutX(stageWidth*0.12);
+        labelTrainingStatusFile.setLayoutY(stageHeight*0.15);
+        pane.getChildren().add(labelTrainingStatusFile);
+
+        labelWeightsFile = new Label("Weights file not selected.");
+        labelWeightsFile.setFont(Font.font("Arial", 20));
+        labelWeightsFile.setLayoutX(stageWidth*0.12);
+        labelWeightsFile.setLayoutY(stageHeight*0.20);
+        pane.getChildren().add(labelWeightsFile);
 
         fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Binary File");
+        fileChooser.setTitle("Open Topology File");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Topology file", "topology*"));
 

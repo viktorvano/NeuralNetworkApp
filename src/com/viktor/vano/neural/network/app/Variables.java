@@ -16,12 +16,12 @@ public class Variables {
 
     public static Button buttonFile;
 
-    public static Label labelFile;
+    public static Label labelTopologyFile, labelTrainingFile, labelTrainingStatusFile, labelWeightsFile;
     public static FileChooser fileChooser;
 
     public static ProgressBar progressBarTraining;
 
     public static Stage stageReference;
 
-    public static File file;
+    public static File topologyFile, trainingFile, trainingStatusFile, weightsFile;
 }
