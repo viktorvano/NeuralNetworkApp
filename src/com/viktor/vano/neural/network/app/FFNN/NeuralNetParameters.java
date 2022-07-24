@@ -4,7 +4,7 @@ import com.sun.istack.internal.NotNull;
 
 import java.util.ArrayList;
 
-import static FFNN.Weights.loadTopology;
+import static com.viktor.vano.neural.network.app.FFNN.Weights.loadTopology;
 
 public class NeuralNetParameters {
     public Integer trainingSamplesCount;

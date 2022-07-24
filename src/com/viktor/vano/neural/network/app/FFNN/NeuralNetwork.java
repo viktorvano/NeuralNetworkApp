@@ -10,9 +10,9 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
-import static FFNN.FileManagement.writeToFile;
-import static FFNN.GeneralFunctions.showVectorValues;
-import static FFNN.Weights.*;
+import static com.viktor.vano.neural.network.app.FFNN.FileManagement.writeToFile;
+import static com.viktor.vano.neural.network.app.FFNN.GeneralFunctions.showVectorValues;
+import static com.viktor.vano.neural.network.app.FFNN.Weights.*;
 
 public class NeuralNetwork {
 

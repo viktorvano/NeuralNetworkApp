@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import static FFNN.FileManagement.*;
+import static com.viktor.vano.neural.network.app.FFNN.FileManagement.*;
 
 public class Weights {
     public static void pushZerosToWeights(NeuralNetParameters neuralNetParameters)
