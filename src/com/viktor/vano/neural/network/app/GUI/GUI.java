@@ -23,7 +23,7 @@ public class GUI extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage.setTitle("STM32 Flasher");
+        stage.setTitle("Neural Network App");
         Scene scene = new Scene(pane, stageWidth, stageHeight);
         stage.setMinHeight(stageHeight);
         stage.setMinWidth(stageWidth);
@@ -31,7 +31,7 @@ public class GUI extends Application {
         stage.setMaxWidth(stageWidth);
         stage.setResizable(false);
         stage.setScene(scene);
-        //stage.getIcons().add(new Image("/com/viktor/vano/stm32flasher/resources/icon.jpg"));
+        stage.getIcons().add(new Image("/com/viktor/vano/neural/network/app/resources/icon.jpg"));
         stage.show();
 
         stageReference = stage;

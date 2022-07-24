@@ -65,7 +65,7 @@ public class AppFunctions {
         fileChooser = new FileChooser();
         fileChooser.setTitle("Open Binary File");
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Binary File - *.bin", "*.bin"));
+                new FileChooser.ExtensionFilter("Topology file", "topology*"));
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(20), event -> {
             /*if(fileSize != 0) {
