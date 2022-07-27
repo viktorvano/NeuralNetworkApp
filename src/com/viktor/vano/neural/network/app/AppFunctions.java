@@ -1,6 +1,8 @@
 package com.viktor.vano.neural.network.app;
 
 import com.sun.istack.internal.NotNull;
+import com.viktor.vano.neural.network.app.FFNN.NeuralNetParameters;
+import com.viktor.vano.neural.network.app.FFNN.NeuralNetwork;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.control.Alert;
@@ -24,6 +26,7 @@ public class AppFunctions {
         buttonFile.setOnAction(event -> {
             topologyFile = fileChooser.showOpenDialog(stageReference);
             if (topologyFile != null) {
+                filesOK = true;
                 System.out.println("File: " + topologyFile.getPath());
                 String basePath = "";
                 String fileNamingConvention = "";
@@ -33,20 +36,27 @@ public class AppFunctions {
                     if(strings.length == 2 && strings[0].length() > 0)
                         basePath = strings[0];
                     else
+                    {
+                        filesOK = false;
                         customPrompt("File Chooser", "You have chosen an incorrect topology file: "
                                 + topologyFile.getPath(), Alert.AlertType.WARNING);
+                    }
 
                     strings = strings[1].split(".txt");
                     if(strings.length == 1 && strings[0].length() > 0)
                         fileNamingConvention = strings[0];
                     else
+                    {
+                        filesOK = false;
                         customPrompt("File Chooser", "Cannot determine the file naming convention from the topology file: "
                                 + topologyFile.getPath(), Alert.AlertType.WARNING);
+                    }
                 }catch (Exception e)
                 {
                     e.printStackTrace();
+                    filesOK = false;
                     customPrompt("File Chooser", "Something went wrong picking a topology file: "
-                            + topologyFile.getPath(), Alert.AlertType.ERROR);
+                            + topologyFile.getPath(), Alert.AlertType.WARNING);
                 }
 
                 if(topologyFile.getPath().length() > 50)
@@ -57,23 +67,22 @@ public class AppFunctions {
                 trainingFile = new File(basePath + "training_" + fileNamingConvention + ".csv");
                 if(!trainingFile.canRead())
                 {
-                    labelTrainingFile.setText("Training file not selected.");
+                    filesOK = false;
                     customPrompt("File Chooser", "Training file can not be read: "
                             + trainingFile.getPath(), Alert.AlertType.WARNING);
-                }else
-                {
-                    if(trainingFile.getPath().length() > 50)
-                        labelTrainingFile.setText("..." + trainingFile.getPath().substring(trainingFile.getPath().length()-50));
-                    else
-                        labelTrainingFile.setText(trainingFile.getPath());
                 }
+
+                if(trainingFile.getPath().length() > 50)
+                    labelTrainingFile.setText("..." + trainingFile.getPath().substring(trainingFile.getPath().length()-50));
+                else
+                    labelTrainingFile.setText(trainingFile.getPath());
+
 
                 trainingStatusFile = new File(basePath + "trainingStatus_" + fileNamingConvention + ".txt");
                 if(!trainingStatusFile.canRead())
                 {
-                    labelTrainingStatusFile.setText("Status file not selected.");
-                    customPrompt("File Chooser", "Training status file can not be read: "
-                            + trainingStatusFile.getPath(), Alert.AlertType.WARNING);
+                    customPrompt("File Chooser", "Training status file does not exist: "
+                            + trainingStatusFile.getPath(), Alert.AlertType.INFORMATION);
                 }else
                 {
                     if(trainingStatusFile.getPath().length() > 50)
@@ -85,15 +94,21 @@ public class AppFunctions {
                 weightsFile = new File(basePath + "weights_" + fileNamingConvention + ".dat");
                 if(!weightsFile.canRead())
                 {
-                    labelWeightsFile.setText("Weights file not selected.");
-                    customPrompt("File Chooser", "Training status file can not be read: "
-                            + weightsFile.getPath(), Alert.AlertType.WARNING);
-                }else
+                    customPrompt("File Chooser", "Weights file can not be read: "
+                            + weightsFile.getPath() + "\nNew file will be created.", Alert.AlertType.INFORMATION);
+                }
+
+                if(weightsFile.getPath().length() > 50)
+                    labelWeightsFile.setText("..." + weightsFile.getPath().substring(weightsFile.getPath().length()-50));
+                else
+                    labelWeightsFile.setText(weightsFile.getPath());
+
+                if(neuralNetParameters == null && filesOK)
                 {
-                    if(weightsFile.getPath().length() > 50)
-                        labelWeightsFile.setText("..." + weightsFile.getPath().substring(weightsFile.getPath().length()-50));
-                    else
-                        labelWeightsFile.setText(weightsFile.getPath());
+                    neuralNetParameters = new NeuralNetParameters(topologyFile.getPath(), trainingFile.getPath(),
+                                                                    weightsFile.getPath(), trainingStatusFile.getPath(),
+                            0.1f,0.5f, 0.001f, 5000, 1000000);
+                    neuralNetwork = new NeuralNetwork(neuralNetParameters);
                 }
             }
         });
@@ -128,20 +143,23 @@ public class AppFunctions {
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Topology file", "topology*"));
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(20), event -> {
-            /*if(fileSize != 0) {
-                progressBarFlashedApp.setProgress((double)readChars / (double)fileSize);
-                labelFlashProgress.setText("                        " + (readChars*100 / fileSize) + " %\n\n"
-                        + readChars + " Bytes flashed of " +
-                        fileSize + " Byte application");
+        buttonTrain = new Button("Train");
+        buttonTrain.setLayoutX(stageWidth*0.85);
+        buttonTrain.setLayoutY(stageHeight*0.05);
+        buttonTrain.setDisable(true);
+        buttonTrain.setOnAction(event -> {
+            if(neuralNetwork != null)
+            {
+                neuralNetwork.trainNeuralNetwork();
             }
-            else{
-                progressBarFlashedApp.setProgress(0);
-            labelFlashProgress.setText("                        0 %\n\n0 Bytes flashed of " +
-                    fileSize + " Byte application");
-            }*/
+        });
+        pane.getChildren().add(buttonTrain);
+
+        Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
+            buttonTrain.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining());
+            buttonFile.setDisable(neuralNetwork != null && neuralNetwork.isNetTraining());
         }));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+        timelineRefresh.setCycleCount(Timeline.INDEFINITE);
+        timelineRefresh.play();
     }
 }
