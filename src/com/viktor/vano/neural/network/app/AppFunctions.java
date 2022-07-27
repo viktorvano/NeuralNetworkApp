@@ -13,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import static com.viktor.vano.neural.network.app.GUI.GUI.customPrompt;
 import static com.viktor.vano.neural.network.app.Variables.*;
@@ -109,33 +110,55 @@ public class AppFunctions {
                                                                     weightsFile.getPath(), trainingStatusFile.getPath(),
                             0.1f,0.5f, 0.001f, 5000, 1000000);
                     neuralNetwork = new NeuralNetwork(neuralNetParameters);
+
+                    buttonNeurons = new ArrayList<>();
+                    for (int i = 0; i < neuralNetParameters.topology.size(); i++)
+                    {
+                        buttonNeurons.add(new ArrayList<>());
+                        for(int l = 0; l < neuralNetParameters.topology.get(i); l++)
+                        {
+                            buttonNeurons.get(i).add(new Button(i + " - " + l));
+                            buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
+                                    (stageWidth / ((float)neuralNetParameters.topology.size() + 1)) * i);
+                            buttonNeurons.get(i).get(l).setLayoutY(0.25*stageHeight +
+                                    (stageHeight / ((float)neuralNetParameters.topology.get(i) + 2)) * l +
+                                    ((stageHeight / ((float)neuralNetParameters.topology.get(i) + 2)) / 2) - 50);
+                            pane.getChildren().add(buttonNeurons.get(i).get(l));
+                        }
+                    }
+                }else if(neuralNetParameters != null && !filesOK)
+                {
+                    //TODO: remove all buttons and set NN as null
+                }else if(neuralNetParameters != null)
+                {
+                    //TODO: remove all buttons and create new ones as well as NN
                 }
             }
         });
         pane.getChildren().add(buttonFile);
 
         labelTopologyFile = new Label("Please select a topology file.");
-        labelTopologyFile.setFont(Font.font("Arial", 20));
+        labelTopologyFile.setFont(Font.font("Arial", 16));
         labelTopologyFile.setLayoutX(stageWidth*0.12);
         labelTopologyFile.setLayoutY(stageHeight*0.05);
         pane.getChildren().add(labelTopologyFile);
 
         labelTrainingFile = new Label("Training file not selected.");
-        labelTrainingFile.setFont(Font.font("Arial", 20));
+        labelTrainingFile.setFont(Font.font("Arial", 16));
         labelTrainingFile.setLayoutX(stageWidth*0.12);
-        labelTrainingFile.setLayoutY(stageHeight*0.10);
+        labelTrainingFile.setLayoutY(stageHeight*0.08);
         pane.getChildren().add(labelTrainingFile);
 
         labelTrainingStatusFile = new Label("Status file not selected.");
-        labelTrainingStatusFile.setFont(Font.font("Arial", 20));
+        labelTrainingStatusFile.setFont(Font.font("Arial", 16));
         labelTrainingStatusFile.setLayoutX(stageWidth*0.12);
-        labelTrainingStatusFile.setLayoutY(stageHeight*0.15);
+        labelTrainingStatusFile.setLayoutY(stageHeight*0.11);
         pane.getChildren().add(labelTrainingStatusFile);
 
         labelWeightsFile = new Label("Weights file not selected.");
-        labelWeightsFile.setFont(Font.font("Arial", 20));
+        labelWeightsFile.setFont(Font.font("Arial", 16));
         labelWeightsFile.setLayoutX(stageWidth*0.12);
-        labelWeightsFile.setLayoutY(stageHeight*0.20);
+        labelWeightsFile.setLayoutY(stageHeight*0.14);
         pane.getChildren().add(labelWeightsFile);
 
         fileChooser = new FileChooser();

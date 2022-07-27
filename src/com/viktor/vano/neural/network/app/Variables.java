@@ -10,6 +10,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class Variables {
     public static final int stageHeight = 600;
@@ -21,10 +22,8 @@ public class Variables {
     public static ProgressBar progressBarTraining;
     public static Stage stageReference;
     public static File topologyFile, trainingFile, trainingStatusFile, weightsFile;
-
     public static boolean filesOK = true;
-
     public static NeuralNetParameters neuralNetParameters;
-
     public static NeuralNetwork neuralNetwork;
+    public static ArrayList<ArrayList<Button>> buttonNeurons;
 }
