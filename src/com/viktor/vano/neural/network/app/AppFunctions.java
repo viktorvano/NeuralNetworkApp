@@ -119,10 +119,10 @@ public class AppFunctions {
                         {
                             buttonNeurons.get(i).add(new Button(i + " - " + l));
                             buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
-                                    (stageWidth / ((float)neuralNetParameters.topology.size() + 1)) * i);
+                                    (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
                             buttonNeurons.get(i).get(l).setLayoutY(0.25*stageHeight +
-                                    (stageHeight / ((float)neuralNetParameters.topology.get(i) + 2)) * l +
-                                    ((stageHeight / ((float)neuralNetParameters.topology.get(i) + 2)) / 2) - 50);
+                                    (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
+                                    ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - 50);
                             pane.getChildren().add(buttonNeurons.get(i).get(l));
                         }
                     }
