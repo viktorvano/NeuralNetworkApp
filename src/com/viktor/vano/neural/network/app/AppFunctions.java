@@ -13,7 +13,10 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static com.viktor.vano.neural.network.app.GUI.GUI.customPrompt;
 import static com.viktor.vano.neural.network.app.Variables.*;
@@ -117,7 +120,9 @@ public class AppFunctions {
                         buttonNeurons.add(new ArrayList<>());
                         for(int l = 0; l < neuralNetParameters.topology.get(i); l++)
                         {
-                            buttonNeurons.get(i).add(new Button(i + " - " + l));
+                            buttonNeurons.get(i).add(new Button(formatFloatToString4(0f)));
+                            buttonNeurons.get(i).get(l).setStyle(colorStyle(0f));
+                            buttonNeurons.get(i).get(l).setPrefSize(70, 40);
                             buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
                                     (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
                             buttonNeurons.get(i).get(l).setLayoutY(0.25*stageHeight +
@@ -170,7 +175,9 @@ public class AppFunctions {
                         buttonNeurons.add(new ArrayList<>());
                         for(int l = 0; l < neuralNetParameters.topology.get(i); l++)
                         {
-                            buttonNeurons.get(i).add(new Button(i + " - " + l));
+                            buttonNeurons.get(i).add(new Button(formatFloatToString4(0f)));
+                            buttonNeurons.get(i).get(l).setStyle(colorStyle(0f));
+                            buttonNeurons.get(i).get(l).setPrefSize(70, 40);
                             buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
                                     (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
                             buttonNeurons.get(i).get(l).setLayoutY(0.25*stageHeight +
@@ -231,5 +238,52 @@ public class AppFunctions {
         }));
         timelineRefresh.setCycleCount(Timeline.INDEFINITE);
         timelineRefresh.play();
+    }
+
+    public static String colorStyle(float value)
+    {
+        if(value > 1.0f)
+            value = 1.0f;
+        else if(value < -1.0f)
+            value = -1.0f;
+
+        value *= 255.0f;
+        boolean positive = true;
+        if(value >= 0.0f)
+        {
+            positive=true;
+        }else
+        {
+            positive = false;
+            value = -value;
+        }
+        String hexString = Integer.toHexString((int)value);
+
+        StringBuilder stringBuilder = new StringBuilder("-fx-background-color: #");
+        String colorString = null;
+        if (positive)
+        {
+            if (hexString.length()>1)
+                stringBuilder.append("00" + hexString + "00;");
+            else
+                stringBuilder.append("000" + hexString + "00;");
+        }else
+        {
+            if (hexString.length()>1)
+                stringBuilder.append("0000" + hexString + ";");
+            else
+                stringBuilder.append("00000" + hexString + ";");
+        }
+        stringBuilder.append(" -fx-text-fill: white;");
+        colorString = stringBuilder.toString();
+
+        return colorString;
+    }
+
+    public static String formatFloatToString4(float number)
+    {
+        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(Locale.getDefault());
+        formatSymbols.setDecimalSeparator('.');
+        return new DecimalFormat("##########.####", formatSymbols).format(number);
     }
 }
