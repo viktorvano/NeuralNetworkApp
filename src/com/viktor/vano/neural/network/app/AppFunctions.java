@@ -128,10 +128,57 @@ public class AppFunctions {
                     }
                 }else if(neuralNetParameters != null && !filesOK)
                 {
-                    //TODO: remove all buttons and set NN as null
+                    if(neuralNetwork != null && neuralNetwork.isNetTraining())
+                        neuralNetwork.stopTraining();
+
+                    for (ArrayList<Button> setOfNeuronButtons : buttonNeurons)
+                    {
+                        for (Button buttonNeuron : setOfNeuronButtons)
+                        {
+                            pane.getChildren().remove(buttonNeuron);
+                        }
+                        setOfNeuronButtons.clear();
+                    }
+                    buttonNeurons.clear();
+
+                    buttonNeurons = null;
+                    neuralNetwork = null;
+                    neuralNetParameters = null;
                 }else if(neuralNetParameters != null)
                 {
-                    //TODO: remove all buttons and create new ones as well as NN
+                    if(neuralNetwork != null && neuralNetwork.isNetTraining())
+                        neuralNetwork.stopTraining();
+
+                    for (ArrayList<Button> setOfNeuronButtons : buttonNeurons)
+                    {
+                        for (Button buttonNeuron : setOfNeuronButtons)
+                        {
+                            pane.getChildren().remove(buttonNeuron);
+                        }
+                        setOfNeuronButtons.clear();
+                    }
+                    buttonNeurons.clear();
+
+                    neuralNetParameters = new NeuralNetParameters(topologyFile.getPath(), trainingFile.getPath(),
+                            weightsFile.getPath(), trainingStatusFile.getPath(),
+                            0.1f,0.5f, 0.001f, 5000, 1000000);
+                    neuralNetwork = new NeuralNetwork(neuralNetParameters);
+
+                    buttonNeurons = new ArrayList<>();
+                    for (int i = 0; i < neuralNetParameters.topology.size(); i++)
+                    {
+                        buttonNeurons.add(new ArrayList<>());
+                        for(int l = 0; l < neuralNetParameters.topology.get(i); l++)
+                        {
+                            buttonNeurons.get(i).add(new Button(i + " - " + l));
+                            buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
+                                    (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
+                            buttonNeurons.get(i).get(l).setLayoutY(0.25*stageHeight +
+                                    (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
+                                    ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - 50);
+                            pane.getChildren().add(buttonNeurons.get(i).get(l));
+                        }
+                    }
                 }
             }
         });
