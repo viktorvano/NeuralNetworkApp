@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class Variables {
     public static int stageHeight = 600;
     public static int stageWidth = 800;
+    public static final int bottomOffset = 80;
     public static final Pane pane = new Pane();
     public static Button buttonFile, buttonTrain;
     public static Label labelTopologyFile, labelTrainingFile, labelTrainingStatusFile, labelWeightsFile;

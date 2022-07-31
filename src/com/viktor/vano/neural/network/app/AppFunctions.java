@@ -125,9 +125,9 @@ public class AppFunctions {
                             buttonNeurons.get(i).get(l).setPrefSize(70, 40);
                             buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
                                     (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
-                            buttonNeurons.get(i).get(l).setLayoutY(0.25*stageHeight +
+                            buttonNeurons.get(i).get(l).setLayoutY(0.26*stageHeight +
                                     (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
-                                    ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - 50);
+                                    ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - bottomOffset);
                             pane.getChildren().add(buttonNeurons.get(i).get(l));
                         }
                     }
@@ -180,9 +180,9 @@ public class AppFunctions {
                             buttonNeurons.get(i).get(l).setPrefSize(70, 40);
                             buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
                                     (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
-                            buttonNeurons.get(i).get(l).setLayoutY(0.25*stageHeight +
+                            buttonNeurons.get(i).get(l).setLayoutY(0.26*stageHeight +
                                     (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
-                                    ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - 50);
+                                    ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - bottomOffset);
                             pane.getChildren().add(buttonNeurons.get(i).get(l));
                         }
                     }
@@ -235,6 +235,14 @@ public class AppFunctions {
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
             buttonTrain.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining());
             buttonFile.setDisable(neuralNetwork != null && neuralNetwork.isNetTraining());
+
+            if(stageReference.getWidth() != stageWidth || stageReference.getHeight() != stageHeight)
+            {
+                stageWidth = (int)stageReference.getWidth();
+                stageHeight = (int)stageReference.getHeight();
+                updateLayoutPositions();
+                System.out.println("Updated layout from timeline.");
+            }
         }));
         timelineRefresh.setCycleCount(Timeline.INDEFINITE);
         timelineRefresh.play();
@@ -315,9 +323,9 @@ public class AppFunctions {
                 {
                     buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
                             (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
-                    buttonNeurons.get(i).get(l).setLayoutY(0.25*stageHeight +
+                    buttonNeurons.get(i).get(l).setLayoutY(0.26*stageHeight +
                             (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
-                            ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - 50);
+                            ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - bottomOffset);
                 }
             }
         }
