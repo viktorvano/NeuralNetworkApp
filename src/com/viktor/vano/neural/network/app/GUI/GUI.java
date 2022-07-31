@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-import static com.viktor.vano.neural.network.app.AppFunctions.initializeLayout;
+import static com.viktor.vano.neural.network.app.AppFunctions.*;
 import static com.viktor.vano.neural.network.app.Variables.*;
 
 public class GUI extends Application {
@@ -27,12 +27,20 @@ public class GUI extends Application {
         Scene scene = new Scene(pane, stageWidth, stageHeight);
         stage.setMinHeight(stageHeight);
         stage.setMinWidth(stageWidth);
-        stage.setMaxHeight(stageHeight);
-        stage.setMaxWidth(stageWidth);
-        stage.setResizable(false);
+        stage.setResizable(true);
         stage.setScene(scene);
         stage.getIcons().add(new Image("/com/viktor/vano/neural/network/app/resources/icon.jpg"));
         stage.show();
+
+        stage.widthProperty().addListener((observable, oldValue, newValue) -> {
+            stageWidth = newValue.intValue();
+            updateLayoutPositions();
+        });
+
+        stage.heightProperty().addListener((observable, oldValue, newValue) -> {
+            stageHeight = newValue.intValue();
+            updateLayoutPositions();
+        });
 
         stageReference = stage;
 

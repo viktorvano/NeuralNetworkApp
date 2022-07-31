@@ -13,8 +13,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Variables {
-    public static final int stageHeight = 600;
-    public static final int stageWidth = 800;
+    public static int stageHeight = 600;
+    public static int stageWidth = 800;
     public static final Pane pane = new Pane();
     public static Button buttonFile, buttonTrain;
     public static Label labelTopologyFile, labelTrainingFile, labelTrainingStatusFile, labelWeightsFile;

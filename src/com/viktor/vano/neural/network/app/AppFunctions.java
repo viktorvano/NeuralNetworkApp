@@ -286,4 +286,40 @@ public class AppFunctions {
         formatSymbols.setDecimalSeparator('.');
         return new DecimalFormat("##########.####", formatSymbols).format(number);
     }
+
+    public static void updateLayoutPositions()
+    {
+        buttonFile.setLayoutX(stageWidth*0.05);
+        buttonFile.setLayoutY(stageHeight*0.05);
+
+        labelTopologyFile.setLayoutX(stageWidth*0.12);
+        labelTopologyFile.setLayoutY(stageHeight*0.05);
+
+        labelTrainingFile.setLayoutX(stageWidth*0.12);
+        labelTrainingFile.setLayoutY(stageHeight*0.08);
+
+        labelTrainingStatusFile.setLayoutX(stageWidth*0.12);
+        labelTrainingStatusFile.setLayoutY(stageHeight*0.11);
+
+        labelWeightsFile.setLayoutX(stageWidth*0.12);
+        labelWeightsFile.setLayoutY(stageHeight*0.14);
+
+        buttonTrain.setLayoutX(stageWidth*0.85);
+        buttonTrain.setLayoutY(stageHeight*0.05);
+
+        if(neuralNetParameters != null && filesOK)
+        {
+            for (int i = 0; i < neuralNetParameters.topology.size(); i++)
+            {
+                for(int l = 0; l < neuralNetParameters.topology.get(i); l++)
+                {
+                    buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
+                            (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
+                    buttonNeurons.get(i).get(l).setLayoutY(0.25*stageHeight +
+                            (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
+                            ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - 50);
+                }
+            }
+        }
+    }
 }
