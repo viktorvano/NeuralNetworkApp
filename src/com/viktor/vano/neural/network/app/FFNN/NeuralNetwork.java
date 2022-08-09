@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 import static com.viktor.vano.neural.network.app.FFNN.FileManagement.writeToFile;
 import static com.viktor.vano.neural.network.app.FFNN.GeneralFunctions.showVectorValues;
 import static com.viktor.vano.neural.network.app.FFNN.Weights.*;
+import static com.viktor.vano.neural.network.app.Variables.isBusy;
 
 public class NeuralNetwork {
 
@@ -355,6 +356,7 @@ public class NeuralNetwork {
                 netObjects.trainingPass++;
                 System.out.println("Pass: " + netObjects.trainingPass);
 
+                isBusy = true;
                 //Get new input data and feed it forward:
                 if(!repeatTrainingCycle)
                     netObjects.trainData.getNextInputs(netObjects);
@@ -370,6 +372,7 @@ public class NeuralNetwork {
 
                 // Collect the net's actual results:
                 myNet.getResults(netObjects.result);
+                isBusy = false;
                 showVectorValues("Outputs: ", netObjects.result);
 
 

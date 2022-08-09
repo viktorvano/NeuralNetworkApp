@@ -18,6 +18,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import static com.viktor.vano.neural.network.app.FFNN.GeneralFunctions.showVectorValues;
 import static com.viktor.vano.neural.network.app.GUI.GUI.customPrompt;
 import static com.viktor.vano.neural.network.app.Variables.*;
 
@@ -232,9 +233,22 @@ public class AppFunctions {
         });
         pane.getChildren().add(buttonTrain);
 
+        buttonRun = new Button("Run");
+        buttonRun.setLayoutX(stageWidth*0.85);
+        buttonRun.setLayoutY(stageHeight*0.10);
+        buttonRun.setDisable(true);
+        buttonRun.setOnAction(event -> {
+            if(neuralNetwork != null)
+            {
+                runCycleOfNN();
+            }
+        });
+        pane.getChildren().add(buttonRun);
+
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
-            buttonTrain.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining());
-            buttonFile.setDisable(neuralNetwork != null && neuralNetwork.isNetTraining());
+            buttonTrain.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || isBusy);
+            buttonRun.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || isBusy);
+            buttonFile.setDisable(neuralNetwork != null && (neuralNetwork.isNetTraining() || isBusy));
 
             if(stageReference.getWidth() != stageWidth || stageReference.getHeight() != stageHeight)
             {
@@ -243,6 +257,18 @@ public class AppFunctions {
                 updateLayoutPositions();
                 System.out.println("Updated layout from timeline.");
             }
+
+            if(!isBusy && buttonNeurons != null)
+            {
+                for (int i = 0; i < buttonNeurons.size(); i++)
+                {
+                    for(int l = 0; l < buttonNeurons.get(i).size(); l++)
+                    {
+                        buttonNeurons.get(i).get(l).setText(formatFloatToString4(neuralNetwork.getNeuronOutput(i,l)));
+                        buttonNeurons.get(i).get(l).setStyle(colorStyle(neuralNetwork.getNeuronOutput(i,l)));
+                    }
+                }
+            }
         }));
         timelineRefresh.setCycleCount(Timeline.INDEFINITE);
         timelineRefresh.play();
@@ -250,6 +276,7 @@ public class AppFunctions {
 
     public static String colorStyle(float value)
     {
+        float color = value;
         if(value > 1.0f)
             value = 1.0f;
         else if(value < -1.0f)
@@ -282,7 +309,10 @@ public class AppFunctions {
             else
                 stringBuilder.append("00000" + hexString + ";");
         }
-        stringBuilder.append(" -fx-text-fill: white;");
+        if(color > 0.6)
+            stringBuilder.append(" -fx-text-fill: black;");
+        else
+            stringBuilder.append(" -fx-text-fill: white;");
         colorString = stringBuilder.toString();
 
         return colorString;
@@ -315,6 +345,9 @@ public class AppFunctions {
         buttonTrain.setLayoutX(stageWidth*0.85);
         buttonTrain.setLayoutY(stageHeight*0.05);
 
+        buttonRun.setLayoutX(stageWidth*0.85);
+        buttonRun.setLayoutY(stageHeight*0.10);
+
         if(neuralNetParameters != null && filesOK)
         {
             for (int i = 0; i < neuralNetParameters.topology.size(); i++)
@@ -329,5 +362,26 @@ public class AppFunctions {
                 }
             }
         }
+    }
+
+    public static void runCycleOfNN()
+    {
+        isBusy = true;
+        neuralNetwork.neuralNetParameters.input.clear();
+        for(int i = 0; i < neuralNetwork.neuralNetParameters.topology.get(0); i++)
+        {
+            neuralNetwork.neuralNetParameters.input.add((float)Math.random());
+        }
+        showVectorValues("Inputs:", neuralNetwork.neuralNetParameters.input);
+        neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
+
+        assert(neuralNetwork.neuralNetParameters.input.size() ==
+                neuralNetwork.neuralNetParameters.topology.get(0));
+
+        // Collect the net's actual results:
+        neuralNetwork.getResults(neuralNetwork.neuralNetParameters.result);
+        showVectorValues("Outputs: ", neuralNetwork.neuralNetParameters.result);
+
+        isBusy = false;
     }
 }
