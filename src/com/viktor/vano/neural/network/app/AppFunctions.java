@@ -124,8 +124,8 @@ public class AppFunctions {
                             buttonNeurons.get(i).add(new Button(formatFloatToString4(0f)));
                             buttonNeurons.get(i).get(l).setStyle(colorStyle(0f));
                             buttonNeurons.get(i).get(l).setPrefSize(70, 40);
-                            buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
-                                    (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
+                            buttonNeurons.get(i).get(l).setLayoutX(0.2*stageWidth +
+                                    (0.8*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
                             buttonNeurons.get(i).get(l).setLayoutY(0.26*stageHeight +
                                     (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
                                     ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - bottomOffset);
@@ -179,8 +179,8 @@ public class AppFunctions {
                             buttonNeurons.get(i).add(new Button(formatFloatToString4(0f)));
                             buttonNeurons.get(i).get(l).setStyle(colorStyle(0f));
                             buttonNeurons.get(i).get(l).setPrefSize(70, 40);
-                            buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
-                                    (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
+                            buttonNeurons.get(i).get(l).setLayoutX(0.2*stageWidth +
+                                    (0.8*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
                             buttonNeurons.get(i).get(l).setLayoutY(0.26*stageHeight +
                                     (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
                                     ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - bottomOffset);
@@ -354,8 +354,8 @@ public class AppFunctions {
             {
                 for(int l = 0; l < neuralNetParameters.topology.get(i); l++)
                 {
-                    buttonNeurons.get(i).get(l).setLayoutX(0.1*stageWidth +
-                            (0.9*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
+                    buttonNeurons.get(i).get(l).setLayoutX(0.2*stageWidth +
+                            (0.8*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
                     buttonNeurons.get(i).get(l).setLayoutY(0.26*stageHeight +
                             (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
                             ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - bottomOffset);
