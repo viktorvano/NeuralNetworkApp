@@ -1,6 +1,5 @@
 package com.viktor.vano.neural.network.app;
 
-import com.sun.istack.internal.NotNull;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetParameters;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetwork;
 import javafx.animation.KeyFrame;
@@ -8,6 +7,7 @@ import javafx.animation.Timeline;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -132,6 +132,18 @@ public class AppFunctions {
                             pane.getChildren().add(buttonNeurons.get(i).get(l));
                         }
                     }
+
+                    sliderInputs = new ArrayList<>();
+                    for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
+                    {
+                        sliderInputs.add(new Slider(-1.0, 1.0, 0));
+                        sliderInputs.get(l).setPrefSize(120, 40);
+                        sliderInputs.get(l).setLayoutX(0.05*stageWidth);
+                        sliderInputs.get(l).setLayoutY(0.26*stageHeight +
+                                (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                                ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+                        pane.getChildren().add(sliderInputs.get(l));
+                    }
                 }else if(neuralNetParameters != null && !filesOK)
                 {
                     if(neuralNetwork != null && neuralNetwork.isNetTraining())
@@ -187,6 +199,25 @@ public class AppFunctions {
                             pane.getChildren().add(buttonNeurons.get(i).get(l));
                         }
                     }
+
+
+                    for (Slider slider : sliderInputs)
+                    {
+                        pane.getChildren().remove(slider);
+                    }
+                    sliderInputs.clear();
+
+                    sliderInputs = new ArrayList<>();
+                    for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
+                    {
+                        sliderInputs.add(new Slider(-1.0, 1.0, 0));
+                        sliderInputs.get(l).setPrefSize(120, 40);
+                        sliderInputs.get(l).setLayoutX(0.05*stageWidth);
+                        sliderInputs.get(l).setLayoutY(0.26*stageHeight +
+                                (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                                ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+                        pane.getChildren().add(sliderInputs.get(l));
+                    }
                 }
             }
         });
@@ -233,21 +264,21 @@ public class AppFunctions {
         });
         pane.getChildren().add(buttonTrain);
 
-        buttonRun = new Button("Run");
-        buttonRun.setLayoutX(stageWidth*0.85);
-        buttonRun.setLayoutY(stageHeight*0.10);
-        buttonRun.setDisable(true);
-        buttonRun.setOnAction(event -> {
+        buttonRandomRun = new Button("Random Run");
+        buttonRandomRun.setLayoutX(stageWidth*0.85);
+        buttonRandomRun.setLayoutY(stageHeight*0.10);
+        buttonRandomRun.setDisable(true);
+        buttonRandomRun.setOnAction(event -> {
             if(neuralNetwork != null)
             {
                 runCycleOfNN();
             }
         });
-        pane.getChildren().add(buttonRun);
+        pane.getChildren().add(buttonRandomRun);
 
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
             buttonTrain.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || isBusy);
-            buttonRun.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || isBusy);
+            buttonRandomRun.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || isBusy);
             buttonFile.setDisable(neuralNetwork != null && (neuralNetwork.isNetTraining() || isBusy));
 
             if(stageReference.getWidth() != stageWidth || stageReference.getHeight() != stageHeight)
@@ -345,8 +376,8 @@ public class AppFunctions {
         buttonTrain.setLayoutX(stageWidth*0.85);
         buttonTrain.setLayoutY(stageHeight*0.05);
 
-        buttonRun.setLayoutX(stageWidth*0.85);
-        buttonRun.setLayoutY(stageHeight*0.10);
+        buttonRandomRun.setLayoutX(stageWidth*0.85);
+        buttonRandomRun.setLayoutY(stageHeight*0.10);
 
         if(neuralNetParameters != null && filesOK)
         {
@@ -360,6 +391,14 @@ public class AppFunctions {
                             (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
                             ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - bottomOffset);
                 }
+            }
+
+            for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
+            {
+                sliderInputs.get(l).setLayoutX(0.05*stageWidth);
+                sliderInputs.get(l).setLayoutY(0.26*stageHeight +
+                        (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                        ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
             }
         }
     }
