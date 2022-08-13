@@ -139,7 +139,7 @@ public class AppFunctions {
                         sliderInputs.add(new Slider(-1.0, 1.0, 0));
                         sliderInputs.get(l).setPrefSize(120, 40);
                         sliderInputs.get(l).setLayoutX(0.05*stageWidth);
-                        sliderInputs.get(l).setLayoutY(0.26*stageHeight +
+                        sliderInputs.get(l).setLayoutY(0.24*stageHeight +
                                 (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(sliderInputs.get(l));
@@ -213,7 +213,7 @@ public class AppFunctions {
                         sliderInputs.add(new Slider(-1.0, 1.0, 0));
                         sliderInputs.get(l).setPrefSize(120, 40);
                         sliderInputs.get(l).setLayoutX(0.05*stageWidth);
-                        sliderInputs.get(l).setLayoutY(0.26*stageHeight +
+                        sliderInputs.get(l).setLayoutY(0.24*stageHeight +
                                 (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(sliderInputs.get(l));
@@ -396,7 +396,7 @@ public class AppFunctions {
             for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
             {
                 sliderInputs.get(l).setLayoutX(0.05*stageWidth);
-                sliderInputs.get(l).setLayoutY(0.26*stageHeight +
+                sliderInputs.get(l).setLayoutY(0.24*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                         ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
             }
