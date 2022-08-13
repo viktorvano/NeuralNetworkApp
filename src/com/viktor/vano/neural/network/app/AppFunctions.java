@@ -4,10 +4,7 @@ import com.viktor.vano.neural.network.app.FFNN.NeuralNetParameters;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetwork;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -134,15 +131,24 @@ public class AppFunctions {
                     }
 
                     sliderInputs = new ArrayList<>();
+                    textFieldInputs = new ArrayList<>();
                     for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
                     {
                         sliderInputs.add(new Slider(-1.0, 1.0, 0));
-                        sliderInputs.get(l).setPrefSize(120, 40);
+                        //sliderInputs.get(l).setPrefSize(120, 40);
                         sliderInputs.get(l).setLayoutX(0.05*stageWidth);
                         sliderInputs.get(l).setLayoutY(0.24*stageHeight +
                                 (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(sliderInputs.get(l));
+
+                        textFieldInputs.add(new TextField());
+                        textFieldInputs.get(l).setPrefSize(120, 40);
+                        textFieldInputs.get(l).setLayoutX(0.05*stageWidth);
+                        textFieldInputs.get(l).setLayoutY(0.28*stageHeight +
+                                (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                                ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+                        pane.getChildren().add(textFieldInputs.get(l));
                     }
                 }else if(neuralNetParameters != null && !filesOK)
                 {
@@ -207,16 +213,32 @@ public class AppFunctions {
                     }
                     sliderInputs.clear();
 
+                    for (TextField textField : textFieldInputs)
+                    {
+                        pane.getChildren().remove(textField);
+                    }
+                    textFieldInputs.clear();
+
+
                     sliderInputs = new ArrayList<>();
+                    textFieldInputs = new ArrayList<>();
                     for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
                     {
                         sliderInputs.add(new Slider(-1.0, 1.0, 0));
-                        sliderInputs.get(l).setPrefSize(120, 40);
+                        //sliderInputs.get(l).setPrefSize(120, 40);
                         sliderInputs.get(l).setLayoutX(0.05*stageWidth);
                         sliderInputs.get(l).setLayoutY(0.24*stageHeight +
                                 (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(sliderInputs.get(l));
+
+                        textFieldInputs.add(new TextField());
+                        textFieldInputs.get(l).setPrefSize(120, 40);
+                        textFieldInputs.get(l).setLayoutX(0.05*stageWidth);
+                        textFieldInputs.get(l).setLayoutY(0.28*stageHeight +
+                                (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                                ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+                        pane.getChildren().add(textFieldInputs.get(l));
                     }
                 }
             }
@@ -397,6 +419,11 @@ public class AppFunctions {
             {
                 sliderInputs.get(l).setLayoutX(0.05*stageWidth);
                 sliderInputs.get(l).setLayoutY(0.24*stageHeight +
+                        (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                        ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+
+                textFieldInputs.get(l).setLayoutX(0.05*stageWidth);
+                textFieldInputs.get(l).setLayoutY(0.28*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                         ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
             }

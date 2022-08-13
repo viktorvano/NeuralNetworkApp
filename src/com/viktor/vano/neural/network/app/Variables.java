@@ -2,10 +2,7 @@ package com.viktor.vano.neural.network.app;
 
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetParameters;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetwork;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -29,6 +26,7 @@ public class Variables {
     public static NeuralNetwork neuralNetwork;
     public static ArrayList<ArrayList<Button>> buttonNeurons;
     public static ArrayList<Slider> sliderInputs;
+    public static ArrayList<TextField> textFieldInputs;
 
     public static boolean isBusy = false;
 }
