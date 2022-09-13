@@ -140,93 +140,22 @@ public class NeuralNetwork {
         }
     }
 
-    public void dream(@NotNull ArrayList<Float> targetDreamOutputs) throws Exception
+    public void imagine(@NotNull ArrayList<Float> targetImaginationOutputs) throws Exception
     {
-        if(targetDreamOutputs.size() != m_layers.get(m_layers.size() - 1).size() - 1)
+        if(targetImaginationOutputs.size() != m_layers.get(m_layers.size() - 1).size() - 1)
             throw new Exception();
 
-        //set output neuron values
-        Layer outLayer = m_layers.get(m_layers.size() - 1);//last layer
-        for (int n = 0; n < outLayer.size() - 1; n++)//last neuron is always const 1
+        final int populationSize = 500;
+        final int survivorCount = 50;
+        final float exitLoss = 0.001f;
+        int generation = 0;
+        final int maxGenerations = 3000;
+        ArrayList<Individual> individuals = new ArrayList<>();
+        ArrayList<Individual> survivors = new ArrayList<>();
+
+        for (int i=0; i<populationSize; i++)
         {
-            outLayer.get(n).setOutputValue(targetDreamOutputs.get(n));
-        }
-
-        //set neuron outputs to zero except the output layer
-        for (int layerNum = 0; layerNum <  m_layers.size() - 1; layerNum++)
-        {
-            Layer layer = m_layers.get(layerNum);
-            for (int n = 0; n < layer.size() - 1; n++)//last neuron is always const 1
-            {
-                layer.get(n).setOutputValue(0f);
-            }
-        }
-
-        //calc unbiased sums
-        for (int layerNum = m_layers.size() - 1; layerNum > 0; layerNum--)
-        {
-            float unbiasedSumSum = 0f;
-            Layer layer = m_layers.get(layerNum);//to calc unbiased sums
-            Layer prevLayer = m_layers.get(layerNum - 1);//to get connection weights
-            for (int n = 0; n < layer.size() - 1; n++)//last neuron is a bias neuron
-            {
-                layer.get(n).calcUnbiasedSum();
-                unbiasedSumSum += layer.get(n).getUnbiasedSum();
-            }
-            //iterate in a loop dream process to set prev layers outputs
-            ArrayList<ArrayList<Float>> weightFraction = new ArrayList<>();//<neurons in layer<connection weights>>
-            for (int n = 0; n < prevLayer.size() - 1; n++)//last neuron is a bias neuron
-            {
-                weightFraction.add(new ArrayList<>());
-                for(int c = 0; c < prevLayer.get(n).getOutputWeights().size(); c++)
-                {
-                    weightFraction.get(n).add(prevLayer.get(n).getOutputWeights().get(c).weight/1024f);
-                }
-            }
-            float controlSum = 0f;
-            //ArrayList<Float> lastFractionSum = new ArrayList<>();
-            while (Math.abs(controlSum) < Math.abs(unbiasedSumSum))
-            {
-                //lastFractionSum.clear();
-                float coefficient = Math.abs(controlSum - unbiasedSumSum);
-                if(coefficient > 1f)
-                {
-                    coefficient = 1f;
-                }
-                if(coefficient < 0.0001)
-                    break;
-
-                for(int n = 0; n < prevLayer.size() - 1; n++)//increment weights
-                {
-                    float fractionSum = 0f;
-                    for(int c = 0; c < weightFraction.get(n).size(); c++)
-                    {
-                        fractionSum += weightFraction.get(n).get(c) * layer.get(c).getUnbiasedSum() * coefficient;
-                    }
-                    //lastFractionSum.add(fractionSum);
-                    prevLayer.get(n).setOutputValue(prevLayer.get(n).getOutputValue() + fractionSum);
-                }
-
-                //check sums of the next layer
-                controlSum = 0f;
-                for (int n = 0; n < layer.size() - 1; n++)
-                {
-                    controlSum += layer.get(n).feedUnbiasedSum(prevLayer);
-                }
-            }
-
-
-            /*for(int n = 0; n < prevLayer.size() - 1; n++)//normalize results
-            {
-                prevLayer.get(n).setOutputValue((float)Math.tanh(prevLayer.get(n).getOutputValue()));
-            }*/
-            /*if(lastFractionSum.size() != 0)//should not happen
-            {
-                for(int n = 0; n < prevLayer.size() - 1; n++)//undo last increment of weights
-                {
-                    prevLayer.get(n).setOutputValue(prevLayer.get(n).getOutputValue() - lastFractionSum.get(n));
-                }
-            }*/
+            individuals.add(new Individual(targetImaginationOutputs));
         }
     }
 
@@ -414,5 +343,28 @@ public class NeuralNetwork {
             System.out.println("Neural Network loaded.");
         }
 
+    }
+
+    private class Individual
+    {
+        public ArrayList<Float> input, target, result;
+        private float loss;
+
+        public Individual(ArrayList<Float> target)
+        {
+            this.target = target;
+            this.input = new ArrayList<>();
+            this.result = new ArrayList<>();
+
+            for(int i=0; i<target.size(); i++)
+            {
+                input.add(((float)Math.random() * 2.0f) - 1.0f);
+            }
+        }
+
+        public float getLoss()
+        {
+            return loss;
+        }
     }
 }
