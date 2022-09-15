@@ -168,6 +168,18 @@ public class AppFunctions {
                     buttonNeurons = null;
                     neuralNetwork = null;
                     neuralNetParameters = null;
+
+                    for (Slider slider : sliderInputs)
+                    {
+                        pane.getChildren().remove(slider);
+                    }
+                    sliderInputs.clear();
+
+                    for (TextField textField : textFieldInputs)
+                    {
+                        pane.getChildren().remove(textField);
+                    }
+                    textFieldInputs.clear();
                 }else if(neuralNetParameters != null)
                 {
                     if(neuralNetwork != null && neuralNetwork.isNetTraining())
