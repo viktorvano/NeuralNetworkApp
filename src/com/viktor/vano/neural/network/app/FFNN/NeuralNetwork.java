@@ -237,8 +237,7 @@ public class NeuralNetwork {
                 int randomIndexOfLastIndividualInput = (int)Math.round(
                         Math.random()*(individuals.get(individuals.size()-1).input.size()-1));
                 individuals.get(individuals.size()-1).
-                        input.set(randomIndexOfLastIndividualInput,
-                                randomValue);
+                        input.set(randomIndexOfLastIndividualInput, randomValue);
             }
         }while (individuals.size() != populationSize);
     }
