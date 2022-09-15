@@ -473,14 +473,12 @@ public class NeuralNetwork {
             {
                 input.add(((float)Math.random() * 2.0f) - 1.0f);
             }
-
-            //0th generation
-            this.neuralNetwork.feedForward(input);
-            this.neuralNetwork.getResults(result);
         }
 
         private void calcLoss()
         {
+            this.neuralNetwork.feedForward(input);
+            this.neuralNetwork.getResults(result);
             if(result.size() == 0 || target.size() == 0 ||
               (target.size() != result.size()))
             {
