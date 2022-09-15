@@ -137,7 +137,7 @@ public class AppFunctions {
                         sliderInputs.add(new Slider(-1.0, 1.0, 0));
                         sliderInputs.get(l).setPrefWidth(110);
                         sliderInputs.get(l).setLayoutX(0.05*stageWidth);
-                        sliderInputs.get(l).setLayoutY(0.245*stageHeight +
+                        sliderInputs.get(l).setLayoutY(0.25*stageHeight +
                                 (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(sliderInputs.get(l));
@@ -145,7 +145,7 @@ public class AppFunctions {
                         textFieldInputs.add(new TextField("0.0"));
                         textFieldInputs.get(l).setPrefSize(110, 40);
                         textFieldInputs.get(l).setLayoutX(0.05*stageWidth);
-                        textFieldInputs.get(l).setLayoutY(0.275*stageHeight +
+                        textFieldInputs.get(l).setLayoutY(0.27*stageHeight +
                                 (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(textFieldInputs.get(l));
@@ -272,7 +272,7 @@ public class AppFunctions {
                         sliderInputs.add(new Slider(-1.0, 1.0, 0));
                         sliderInputs.get(l).setPrefWidth(110);
                         sliderInputs.get(l).setLayoutX(0.05*stageWidth);
-                        sliderInputs.get(l).setLayoutY(0.245*stageHeight +
+                        sliderInputs.get(l).setLayoutY(0.25*stageHeight +
                                 (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(sliderInputs.get(l));
@@ -280,7 +280,7 @@ public class AppFunctions {
                         textFieldInputs.add(new TextField("0.0"));
                         textFieldInputs.get(l).setPrefSize(110, 40);
                         textFieldInputs.get(l).setLayoutX(0.05*stageWidth);
-                        textFieldInputs.get(l).setLayoutY(0.275*stageHeight +
+                        textFieldInputs.get(l).setLayoutY(0.27*stageHeight +
                                 (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(textFieldInputs.get(l));
