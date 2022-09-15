@@ -141,9 +141,9 @@ public class NeuralNetwork {
         }
     }
 
-    public void imagine(@NotNull final ArrayList<Float> targetImaginationOutputs) throws Exception
+    public ArrayList<Float> imagine(@NotNull final ArrayList<Float> targetImaginationOutputs) throws Exception
     {
-        if(targetImaginationOutputs == null)
+        if(targetImaginationOutputs.size() != m_layers.get(m_layers.size() - 1).size() - 1)
             throw new Exception();
 
         final int populationSize = 500;
@@ -167,13 +167,15 @@ public class NeuralNetwork {
             populateGeneration(individuals, survivors, populationSize, this, targetImaginationOutputs);
             sortTheBestIndividuals(individuals, survivors, survivorCount);
             plotSurvivorLosses(survivors, generation);
+
+            if(survivors.get(0).getLoss() < exitLoss)
+            {
+                System.out.println("Imagination ended due to low loss with generation: " + generation);
+                break;
+            }
         }
 
-        targetImaginationOutputs.clear();
-        for(float value : survivors.get(0).input)
-        {
-            targetImaginationOutputs.add(value);
-        }
+        return survivors.get(0).input;//the best of the best
     }
 
     private static void sortTheBestIndividuals(ArrayList<Individual> individuals, ArrayList<Individual> survivors, final float survivorCount)
