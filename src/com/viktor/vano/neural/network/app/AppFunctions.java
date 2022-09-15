@@ -142,13 +142,45 @@ public class AppFunctions {
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(sliderInputs.get(l));
 
-                        textFieldInputs.add(new TextField());
+                        textFieldInputs.add(new TextField("0.0"));
                         textFieldInputs.get(l).setPrefSize(120, 40);
                         textFieldInputs.get(l).setLayoutX(0.05*stageWidth);
                         textFieldInputs.get(l).setLayoutY(0.28*stageHeight +
                                 (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(textFieldInputs.get(l));
+
+                        neuralNetwork.neuralNetParameters.input.add(0.0f);
+                        int finalL = l;
+                        sliderInputs.get(l).setOnDragDetected(event1 -> {
+                            neuralNetwork.neuralNetParameters.input.set(finalL, (float)sliderInputs.get(finalL).getValue());
+                            textFieldInputs.get(finalL).setText(String.valueOf(sliderInputs.get(finalL).getValue()));
+                            runCycleOfNN();
+                        });
+
+                        textFieldInputs.get(l).textProperty().addListener(observable -> {
+                            String text = textFieldInputs.get(finalL).getText();
+                            if(text.length() > 3)
+                            {
+                                try{
+                                    float value = Float.parseFloat(text);
+                                    if(value > 1.0f)
+                                    {
+                                        value = 1.0f;
+                                    }else if(value < -1.0f)
+                                    {
+                                        value = -1.0f;
+                                    }
+
+                                    sliderInputs.get(finalL).setValue(value);
+                                    neuralNetwork.neuralNetParameters.input.set(finalL, value);
+                                    runCycleOfNN();
+                                }catch (Exception e)
+                                {
+                                    textFieldInputs.get(finalL).setText("");
+                                }
+                            }
+                        });
                     }
                 }else if(neuralNetParameters != null && !filesOK)
                 {
@@ -244,13 +276,45 @@ public class AppFunctions {
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(sliderInputs.get(l));
 
-                        textFieldInputs.add(new TextField());
+                        textFieldInputs.add(new TextField("0.0"));
                         textFieldInputs.get(l).setPrefSize(120, 40);
                         textFieldInputs.get(l).setLayoutX(0.05*stageWidth);
                         textFieldInputs.get(l).setLayoutY(0.28*stageHeight +
                                 (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                                 ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
                         pane.getChildren().add(textFieldInputs.get(l));
+
+                        neuralNetwork.neuralNetParameters.input.add(0.0f);
+                        int finalL = l;
+                        sliderInputs.get(l).setOnDragDetected(event1 -> {
+                            neuralNetwork.neuralNetParameters.input.set(finalL, (float)sliderInputs.get(finalL).getValue());
+                            textFieldInputs.get(finalL).setText(String.valueOf(sliderInputs.get(finalL).getValue()));
+                            runCycleOfNN();
+                        });
+
+                        textFieldInputs.get(l).textProperty().addListener(observable -> {
+                            String text = textFieldInputs.get(finalL).getText();
+                            if(text.length() > 3)
+                            {
+                                try{
+                                    float value = Float.parseFloat(text);
+                                    if(value > 1.0f)
+                                    {
+                                        value = 1.0f;
+                                    }else if(value < -1.0f)
+                                    {
+                                        value = -1.0f;
+                                    }
+
+                                    sliderInputs.get(finalL).setValue(value);
+                                    neuralNetwork.neuralNetParameters.input.set(finalL, value);
+                                    runCycleOfNN();
+                                }catch (Exception e)
+                                {
+                                    textFieldInputs.get(finalL).setText("");
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -305,7 +369,7 @@ public class AppFunctions {
         buttonRandomRun.setOnAction(event -> {
             if(neuralNetwork != null)
             {
-                runCycleOfNN();
+                runRandomCycleOfNN();
             }
         });
         pane.getChildren().add(buttonRandomRun);
@@ -442,7 +506,7 @@ public class AppFunctions {
         }
     }
 
-    public static void runCycleOfNN()
+    public static void runRandomCycleOfNN()
     {
         isBusy = true;
         neuralNetwork.neuralNetParameters.input.clear();
@@ -450,6 +514,22 @@ public class AppFunctions {
         {
             neuralNetwork.neuralNetParameters.input.add((float)Math.random());
         }
+        showVectorValues("Inputs:", neuralNetwork.neuralNetParameters.input);
+        neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
+
+        assert(neuralNetwork.neuralNetParameters.input.size() ==
+                neuralNetwork.neuralNetParameters.topology.get(0));
+
+        // Collect the net's actual results:
+        neuralNetwork.getResults(neuralNetwork.neuralNetParameters.result);
+        showVectorValues("Outputs: ", neuralNetwork.neuralNetParameters.result);
+
+        isBusy = false;
+    }
+
+    public static void runCycleOfNN()
+    {
+        isBusy = true;
         showVectorValues("Inputs:", neuralNetwork.neuralNetParameters.input);
         neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
 
