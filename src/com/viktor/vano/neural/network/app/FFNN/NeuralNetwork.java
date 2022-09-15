@@ -228,9 +228,17 @@ public class NeuralNetwork {
             }else if(randValue < 20)
             {
                 //alter one input value
+                individuals.add(survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0))));
             }else if(randValue < 30)
             {
                 //randomly change one input value
+                individuals.add(survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0))));
+                float randomValue = ((float)Math.random() * 2.0f) - 1.0f;
+                int randomIndexOfLastIndividualInput = (int)Math.round(
+                        Math.random()*(individuals.get(individuals.size()-1).input.size()-1));
+                individuals.get(individuals.size()-1).
+                        input.set(randomIndexOfLastIndividualInput,
+                                randomValue);
             }
         }while (individuals.size() != populationSize);
     }
@@ -435,7 +443,7 @@ public class NeuralNetwork {
             this.result = new ArrayList<>();
             this.neuralNetwork = neuralNetwork;
 
-            for(int i=0; i<input.size(); i++)
+            for(int i=0; i<neuralNetwork.neuralNetParameters.topology.get(0); i++)
             {
                 input.add(((float)Math.random() * 2.0f) - 1.0f);
             }
