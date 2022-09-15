@@ -141,7 +141,7 @@ public class NeuralNetwork {
         }
     }
 
-    public void imagine(@NotNull ArrayList<Float> targetImaginationOutputs) throws Exception
+    public void imagine(@NotNull final ArrayList<Float> targetImaginationOutputs) throws Exception
     {
         if(targetImaginationOutputs.size() != m_layers.get(m_layers.size() - 1).size() - 1)
             throw new Exception();
@@ -159,6 +159,15 @@ public class NeuralNetwork {
             individuals.add(new Individual(targetImaginationOutputs, this));
         }
         sortTheBestIndividuals(individuals, survivors, survivorCount);
+        plotSurvivorLosses(survivors, generation);
+
+        for(int i=0; i<maxGenerations; i++)
+        {
+            generation++;
+            populateGeneration(individuals, survivors, populationSize, this, targetImaginationOutputs);
+            sortTheBestIndividuals(individuals, survivors, survivorCount);
+            plotSurvivorLosses(survivors, generation);
+        }
     }
 
     private static void sortTheBestIndividuals(ArrayList<Individual> individuals, ArrayList<Individual> survivors, final float survivorCount)
@@ -185,6 +194,45 @@ public class NeuralNetwork {
                 }
             }
         }
+    }
+
+    private static void plotSurvivorLosses(final ArrayList<Individual> survivors, final int generation)
+    {
+        int index = 0;
+        for(Individual survivor : survivors)
+        {
+            System.out.println("Survivor [" + index + "] of generation [" + generation + "]: " + survivor.getLoss());
+            index++;
+        }
+    }
+
+    private void populateGeneration(ArrayList<Individual> individuals,
+                                           ArrayList<Individual> survivors,
+                                           final int populationSize,
+                                           NeuralNetwork neuralNetwork,
+                                           final ArrayList<Float> target)
+    {
+        individuals.clear();
+        //add the survivors to the new generation
+        for(Individual survivor : survivors)
+        {
+            individuals.add(survivor);
+        }
+
+        //fill the population with new variants of the individuals
+        do {
+            int randValue =  (int)(Math.round(Math.random()*30.0));
+            if(randValue < 10)
+            {
+                individuals.add(new Individual(target, neuralNetwork));
+            }else if(randValue < 20)
+            {
+                //alter one input value
+            }else if(randValue < 30)
+            {
+                //randomly change one input value
+            }
+        }while (individuals.size() != populationSize);
     }
 
     public void getResults(ArrayList<Float> resultValues)
