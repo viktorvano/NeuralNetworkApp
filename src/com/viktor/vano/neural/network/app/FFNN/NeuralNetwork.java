@@ -143,7 +143,7 @@ public class NeuralNetwork {
 
     public void imagine(@NotNull final ArrayList<Float> targetImaginationOutputs) throws Exception
     {
-        if(targetImaginationOutputs.size() != m_layers.get(m_layers.size() - 1).size() - 1)
+        if(targetImaginationOutputs == null)
             throw new Exception();
 
         final int populationSize = 500;
@@ -167,6 +167,12 @@ public class NeuralNetwork {
             populateGeneration(individuals, survivors, populationSize, this, targetImaginationOutputs);
             sortTheBestIndividuals(individuals, survivors, survivorCount);
             plotSurvivorLosses(survivors, generation);
+        }
+
+        targetImaginationOutputs.clear();
+        for(float value : survivors.get(0).input)
+        {
+            targetImaginationOutputs.add(value);
         }
     }
 
@@ -229,6 +235,25 @@ public class NeuralNetwork {
             {
                 //alter one input value
                 individuals.add(survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0))));
+                int randomIndexOfLastIndividualInput = (int)Math.round(
+                        Math.random()*(individuals.get(individuals.size()-1).input.size()-1));
+                float currentValue = individuals.get(individuals.size()-1).input.get(randomIndexOfLastIndividualInput);
+                final float delta = 0.001f;
+                if(currentValue + delta >= 1.0f)
+                {
+                    currentValue -= delta;
+                }else
+                {
+                    if(Math.random() > 0.5)
+                    {
+                        currentValue += delta;
+                    }else
+                    {
+                        currentValue -= delta;
+                    }
+                }
+                individuals.get(individuals.size()-1).
+                        input.set(randomIndexOfLastIndividualInput, currentValue);
             }else if(randValue < 30)
             {
                 //randomly change one input value
