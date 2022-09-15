@@ -152,7 +152,7 @@ public class AppFunctions {
 
                         neuralNetwork.neuralNetParameters.input.add(0.0f);
                         int finalL = l;
-                        sliderInputs.get(l).setOnDragDetected(event1 -> {
+                        sliderInputs.get(l).valueProperty().addListener(observable -> {
                             neuralNetwork.neuralNetParameters.input.set(finalL, (float)sliderInputs.get(finalL).getValue());
                             textFieldInputs.get(finalL).setText(String.valueOf(sliderInputs.get(finalL).getValue()));
                             runCycleOfNN();
@@ -160,7 +160,8 @@ public class AppFunctions {
 
                         textFieldInputs.get(l).textProperty().addListener(observable -> {
                             String text = textFieldInputs.get(finalL).getText();
-                            if(text.length() > 3)
+                            if(((text.contains("-") || text.contains("+")) && text.length() > 3)
+                                || text.length() > 2)
                             {
                                 try{
                                     float value = Float.parseFloat(text);
@@ -286,7 +287,7 @@ public class AppFunctions {
 
                         neuralNetwork.neuralNetParameters.input.add(0.0f);
                         int finalL = l;
-                        sliderInputs.get(l).setOnDragDetected(event1 -> {
+                        sliderInputs.get(l).valueProperty().addListener(observable -> {
                             neuralNetwork.neuralNetParameters.input.set(finalL, (float)sliderInputs.get(finalL).getValue());
                             textFieldInputs.get(finalL).setText(String.valueOf(sliderInputs.get(finalL).getValue()));
                             runCycleOfNN();
@@ -294,7 +295,8 @@ public class AppFunctions {
 
                         textFieldInputs.get(l).textProperty().addListener(observable -> {
                             String text = textFieldInputs.get(finalL).getText();
-                            if(text.length() > 3)
+                            if(((text.contains("-") || text.contains("+")) && text.length() > 3)
+                                    || text.length() > 2)
                             {
                                 try{
                                     float value = Float.parseFloat(text);
