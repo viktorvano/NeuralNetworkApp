@@ -514,7 +514,10 @@ public class AppFunctions {
         neuralNetwork.neuralNetParameters.input.clear();
         for(int i = 0; i < neuralNetwork.neuralNetParameters.topology.get(0); i++)
         {
-            neuralNetwork.neuralNetParameters.input.add((float)Math.random());
+            float randomValue = (float)Math.random();
+            neuralNetwork.neuralNetParameters.input.add(randomValue);
+            sliderInputs.get(i).setValue(randomValue);
+            textFieldInputs.get(i).setText(String.valueOf(randomValue));
         }
         showVectorValues("Inputs:", neuralNetwork.neuralNetParameters.input);
         neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
