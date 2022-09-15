@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import static com.viktor.vano.neural.network.app.FFNN.FileManagement.writeToFile;
@@ -156,6 +157,33 @@ public class NeuralNetwork {
         for (int i=0; i<populationSize; i++)
         {
             individuals.add(new Individual(targetImaginationOutputs, this));
+        }
+        sortTheBestIndividuals(individuals, survivors, survivorCount);
+    }
+
+    private static void sortTheBestIndividuals(ArrayList<Individual> individuals, ArrayList<Individual> survivors, final float survivorCount)
+    {
+        survivors.clear();
+
+        //sort the best individuals
+        float[] losses = new float[individuals.size()];
+        for (int i=0; i<individuals.size(); i++)
+        {
+            losses[i] = individuals.get(i).getLoss();
+        }
+        Arrays.sort(losses);
+
+        //find the best individuals based on the lowest loss
+        for (int i=0; i<survivorCount; i++)
+        {
+            for(Individual individual : individuals)
+            {
+                if(individual.getLoss() == losses[i])
+                {
+                    survivors.add(individual);
+                    break;
+                }
+            }
         }
     }
 
