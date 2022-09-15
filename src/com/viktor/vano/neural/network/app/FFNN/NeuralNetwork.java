@@ -155,7 +155,7 @@ public class NeuralNetwork {
 
         for (int i=0; i<populationSize; i++)
         {
-            individuals.add(new Individual(targetImaginationOutputs));
+            individuals.add(new Individual(targetImaginationOutputs, this));
         }
     }
 
@@ -347,24 +347,60 @@ public class NeuralNetwork {
 
     private class Individual
     {
-        public ArrayList<Float> input, target, result;
+        private ArrayList<Float> input, result;
+        private final ArrayList<Float> target;
+        private NeuralNetwork neuralNetwork;
         private float loss;
 
-        public Individual(ArrayList<Float> target)
+        public Individual(ArrayList<Float> target, @NotNull NeuralNetwork neuralNetwork)
         {
             this.target = target;
             this.input = new ArrayList<>();
             this.result = new ArrayList<>();
+            this.neuralNetwork = neuralNetwork;
 
-            for(int i=0; i<target.size(); i++)
+            for(int i=0; i<input.size(); i++)
             {
                 input.add(((float)Math.random() * 2.0f) - 1.0f);
             }
+
+            //0th generation
+            this.neuralNetwork.feedForward(input);
+            this.neuralNetwork.getResults(result);
+        }
+
+        private void calcLoss()
+        {
+            if(result.size() == 0 || target.size() == 0 ||
+              (target.size() != result.size()))
+            {
+                this.loss = -1.0f;
+                return;
+            }
+
+            float delta = 0.0f;
+            for(int i=0; i<target.size(); i++)
+            {
+                delta += Math.abs(result.get(i) - target.get(i));
+            }
+
+            this.loss = delta;
         }
 
         public float getLoss()
         {
-            return loss;
+            calcLoss();
+            return this.loss;
+        }
+
+        public ArrayList<Float> getResult()
+        {
+            return result;
+        }
+
+        public ArrayList<Float> getTarget()
+        {
+            return target;
         }
     }
 }
