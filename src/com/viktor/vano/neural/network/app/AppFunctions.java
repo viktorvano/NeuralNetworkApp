@@ -252,9 +252,6 @@ public class AppFunctions {
 
     private static void createNewNeuralNetwork()
     {
-        neuralNetwork.neuralNetParameters.input.clear();
-        neuralNetwork.neuralNetParameters.target.clear();
-        neuralNetwork.neuralNetParameters.result.clear();
         neuralNetParameters = new NeuralNetParameters(topologyFile.getPath(), trainingFile.getPath(),
                 weightsFile.getPath(), trainingStatusFile.getPath(),
                 0.1f,0.5f, 0.001f, 5000, 1000000);
@@ -284,6 +281,9 @@ public class AppFunctions {
 
     private static void createNewSlidersAndTextFields()
     {
+        neuralNetwork.neuralNetParameters.input.clear();
+        neuralNetwork.neuralNetParameters.target.clear();
+        neuralNetwork.neuralNetParameters.result.clear();
         sliderInputs = new ArrayList<>();
         sliderOutputs = new ArrayList<>();
         textFieldInputs = new ArrayList<>();
@@ -344,7 +344,7 @@ public class AppFunctions {
         {
             sliderOutputs.add(new Slider(-1.0, 1.0, 0));
             sliderOutputs.get(l).setPrefWidth(110);
-            sliderOutputs.get(l).setLayoutX(0.75*stageWidth);
+            sliderOutputs.get(l).setLayoutX(0.8*stageWidth);
             sliderOutputs.get(l).setLayoutY(0.25*stageHeight +
                     (0.75*stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) * l +
                     ((stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) / 2) - bottomOffset);
@@ -352,7 +352,7 @@ public class AppFunctions {
 
             textFieldOutputs.add(new TextField("0.0"));
             textFieldOutputs.get(l).setPrefSize(110, 40);
-            textFieldOutputs.get(l).setLayoutX(0.75*stageWidth);
+            textFieldOutputs.get(l).setLayoutX(0.8*stageWidth);
             textFieldOutputs.get(l).setLayoutY(0.27*stageHeight +
                     (0.75*stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) * l +
                     ((stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) / 2) - bottomOffset);
@@ -472,7 +472,7 @@ public class AppFunctions {
                 for(int l = 0; l < neuralNetParameters.topology.get(i); l++)
                 {
                     buttonNeurons.get(i).get(l).setLayoutX(0.2*stageWidth +
-                            (0.8*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
+                            (0.6*stageWidth / ((float)neuralNetParameters.topology.size())) * i);
                     buttonNeurons.get(i).get(l).setLayoutY(0.26*stageHeight +
                             (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
                             ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - bottomOffset);
@@ -490,6 +490,19 @@ public class AppFunctions {
                 textFieldInputs.get(l).setLayoutY(0.28*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                         ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+            }
+
+            for(int l = 0; l < neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1); l++)
+            {
+                sliderOutputs.get(l).setLayoutX(0.8*stageWidth);
+                sliderOutputs.get(l).setLayoutY(0.25*stageHeight +
+                        (0.75*stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) * l +
+                        ((stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) / 2) - bottomOffset);
+
+                textFieldOutputs.get(l).setLayoutX(0.8*stageWidth);
+                textFieldOutputs.get(l).setLayoutY(0.27*stageHeight +
+                        (0.75*stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) * l +
+                        ((stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) / 2) - bottomOffset);
             }
         }
     }
