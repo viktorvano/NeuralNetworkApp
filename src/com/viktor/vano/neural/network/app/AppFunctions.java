@@ -236,10 +236,25 @@ public class AppFunctions {
             pane.getChildren().remove(textField);
         }
         textFieldInputs.clear();
+
+        for (Slider slider : sliderOutputs)
+        {
+            pane.getChildren().remove(slider);
+        }
+        sliderOutputs.clear();
+
+        for (TextField textField : textFieldOutputs)
+        {
+            pane.getChildren().remove(textField);
+        }
+        textFieldOutputs.clear();
     }
 
     private static void createNewNeuralNetwork()
     {
+        neuralNetwork.neuralNetParameters.input.clear();
+        neuralNetwork.neuralNetParameters.target.clear();
+        neuralNetwork.neuralNetParameters.result.clear();
         neuralNetParameters = new NeuralNetParameters(topologyFile.getPath(), trainingFile.getPath(),
                 weightsFile.getPath(), trainingStatusFile.getPath(),
                 0.1f,0.5f, 0.001f, 5000, 1000000);
@@ -272,7 +287,7 @@ public class AppFunctions {
         sliderInputs = new ArrayList<>();
         sliderOutputs = new ArrayList<>();
         textFieldInputs = new ArrayList<>();
-        textFieldsOutputs = new ArrayList<>();
+        textFieldOutputs = new ArrayList<>();
         for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
         {
             sliderInputs.add(new Slider(-1.0, 1.0, 0));
@@ -320,6 +335,56 @@ public class AppFunctions {
                     }catch (Exception e)
                     {
                         textFieldInputs.get(finalL).setText("");
+                    }
+                }
+            });
+        }
+
+        for(int l = 0; l < neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1); l++)
+        {
+            sliderOutputs.add(new Slider(-1.0, 1.0, 0));
+            sliderOutputs.get(l).setPrefWidth(110);
+            sliderOutputs.get(l).setLayoutX(0.75*stageWidth);
+            sliderOutputs.get(l).setLayoutY(0.25*stageHeight +
+                    (0.75*stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) * l +
+                    ((stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) / 2) - bottomOffset);
+            pane.getChildren().add(sliderOutputs.get(l));
+
+            textFieldOutputs.add(new TextField("0.0"));
+            textFieldOutputs.get(l).setPrefSize(110, 40);
+            textFieldOutputs.get(l).setLayoutX(0.75*stageWidth);
+            textFieldOutputs.get(l).setLayoutY(0.27*stageHeight +
+                    (0.75*stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) * l +
+                    ((stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) / 2) - bottomOffset);
+            pane.getChildren().add(textFieldOutputs.get(l));
+
+            neuralNetwork.neuralNetParameters.result.add(0.0f);
+            int finalL = l;
+            sliderOutputs.get(l).valueProperty().addListener(observable -> {
+                //neuralNetwork.neuralNetParameters.result.set(finalL, (float)sliderOutputs.get(finalL).getValue());
+                textFieldOutputs.get(finalL).setText(String.valueOf(sliderOutputs.get(finalL).getValue()));
+            });
+
+            textFieldOutputs.get(l).textProperty().addListener(observable -> {
+                String text = textFieldOutputs.get(finalL).getText();
+                if(((text.contains("-") || text.contains("+")) && text.length() > 3)
+                        || text.length() > 2)
+                {
+                    try{
+                        float value = Float.parseFloat(text);
+                        if(value > 1.0f)
+                        {
+                            value = 1.0f;
+                        }else if(value < -1.0f)
+                        {
+                            value = -1.0f;
+                        }
+
+                        sliderOutputs.get(finalL).setValue(value);
+                        //neuralNetwork.neuralNetParameters.result.set(finalL, value);
+                    }catch (Exception e)
+                    {
+                        textFieldOutputs.get(finalL).setText("");
                     }
                 }
             });
