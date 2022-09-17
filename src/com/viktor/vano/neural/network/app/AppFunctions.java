@@ -200,6 +200,11 @@ public class AppFunctions {
                         buttonNeurons.get(i).get(l).setStyle(colorStyle(neuralNetwork.getNeuronOutput(i,l)));
                     }
                 }
+
+                for(int l = 0; l < neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1); l++)
+                {
+                    sliderOutputs.get(l).setValue(neuralNetwork.neuralNetParameters.result.get(l));
+                }
             }
         }));
         timelineRefresh.setCycleCount(Timeline.INDEFINITE);
