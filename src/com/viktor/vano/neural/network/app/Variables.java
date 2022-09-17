@@ -25,8 +25,7 @@ public class Variables {
     public static NeuralNetParameters neuralNetParameters;
     public static NeuralNetwork neuralNetwork;
     public static ArrayList<ArrayList<Button>> buttonNeurons;
-    public static ArrayList<Slider> sliderInputs;
-    public static ArrayList<TextField> textFieldInputs;
-
+    public static ArrayList<Slider> sliderInputs, sliderOutputs;
+    public static ArrayList<TextField> textFieldInputs, textFieldsOutputs;
     public static boolean isBusy = false;
 }
