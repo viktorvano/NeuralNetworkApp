@@ -178,9 +178,9 @@ public class AppFunctions {
         pane.getChildren().add(buttonRandomRun);
 
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
-            buttonTrain.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || isBusy);
-            buttonRandomRun.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || isBusy);
-            buttonFile.setDisable(neuralNetwork != null && (neuralNetwork.isNetTraining() || isBusy));
+            buttonTrain.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || update);
+            buttonRandomRun.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || update);
+            buttonFile.setDisable(neuralNetwork != null && (neuralNetwork.isNetTraining() || update));
 
             if(stageReference.getWidth() != stageWidth || stageReference.getHeight() != stageHeight)
             {
@@ -190,8 +190,9 @@ public class AppFunctions {
                 System.out.println("Updated layout from timeline.");
             }
 
-            if(!isBusy && buttonNeurons != null)
+            if(update && buttonNeurons != null)
             {
+                update = false;
                 for (int i = 0; i < buttonNeurons.size(); i++)
                 {
                     for(int l = 0; l < buttonNeurons.get(i).size(); l++)
@@ -514,7 +515,8 @@ public class AppFunctions {
 
     public static void runRandomCycleOfNN()
     {
-        isBusy = true;
+        update = false;
+
         neuralNetwork.neuralNetParameters.input.clear();
         for(int i = 0; i < neuralNetwork.neuralNetParameters.topology.get(0); i++)
         {
@@ -533,12 +535,13 @@ public class AppFunctions {
         neuralNetwork.getResults(neuralNetwork.neuralNetParameters.result);
         showVectorValues("Outputs: ", neuralNetwork.neuralNetParameters.result);
 
-        isBusy = false;
+        update = true;
     }
 
     public static void runCycleOfNN()
     {
-        isBusy = true;
+        update = false;
+
         showVectorValues("Inputs:", neuralNetwork.neuralNetParameters.input);
         neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
 
@@ -549,6 +552,6 @@ public class AppFunctions {
         neuralNetwork.getResults(neuralNetwork.neuralNetParameters.result);
         showVectorValues("Outputs: ", neuralNetwork.neuralNetParameters.result);
 
-        isBusy = false;
+        update = true;
     }
 }

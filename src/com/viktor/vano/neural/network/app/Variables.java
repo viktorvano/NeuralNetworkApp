@@ -27,5 +27,5 @@ public class Variables {
     public static ArrayList<ArrayList<Button>> buttonNeurons;
     public static ArrayList<Slider> sliderInputs, sliderOutputs;
     public static ArrayList<TextField> textFieldInputs, textFieldOutputs;
-    public static boolean isBusy = false;
+    public static boolean update = false;
 }
