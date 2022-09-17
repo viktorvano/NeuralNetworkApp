@@ -315,7 +315,7 @@ public class AppFunctions {
             int finalL = l;
             sliderInputs.get(l).valueProperty().addListener(observable -> {
                 neuralNetwork.neuralNetParameters.input.set(finalL, (float)sliderInputs.get(finalL).getValue());
-                textFieldInputs.get(finalL).setText(String.valueOf(sliderInputs.get(finalL).getValue()));
+                textFieldInputs.get(finalL).setText(String.format("%.3f", sliderInputs.get(finalL).getValue()).replace(",", "."));
                 runCycleOfNN();
             });
 
@@ -367,7 +367,7 @@ public class AppFunctions {
             int finalL = l;
             sliderOutputs.get(l).valueProperty().addListener(observable -> {
                 //neuralNetwork.neuralNetParameters.result.set(finalL, (float)sliderOutputs.get(finalL).getValue());
-                textFieldOutputs.get(finalL).setText(String.valueOf(sliderOutputs.get(finalL).getValue()));
+                textFieldOutputs.get(finalL).setText(String.format("%.3f", sliderOutputs.get(finalL).getValue()).replace(",", "."));
             });
 
             textFieldOutputs.get(l).textProperty().addListener(observable -> {
