@@ -587,8 +587,7 @@ public class NeuralNetwork {
         public float randomValue(float min, float max)
         {
             float range = max - min;
-            float center = range / 2.0f;
-            float randomValue = ((float)Math.random() * range) - center;
+            float randomValue = ((float)Math.random() * range) - min;
             return randomValue;
         }
     }
