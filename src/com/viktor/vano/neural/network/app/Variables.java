@@ -28,4 +28,6 @@ public class Variables {
     public static ArrayList<Slider> sliderInputs, sliderOutputs;
     public static ArrayList<TextField> textFieldInputs, textFieldOutputs;
     public static boolean update = false, updateInputSliders = false;
+
+    public static AppFunctions.Imagination imagination = new AppFunctions.Imagination(0.0f, 1.0f);
 }

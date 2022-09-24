@@ -50,6 +50,7 @@ public class GUI extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
+        imagination.stop();
     }
 
     public static void customPrompt(@NotNull String title, @NotNull String message, @NotNull Alert.AlertType alertType)

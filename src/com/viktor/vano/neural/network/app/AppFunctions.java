@@ -184,7 +184,8 @@ public class AppFunctions {
         buttonImagine.setOnAction(event -> {
             if(neuralNetwork != null)
             {
-                imaginationOfNN(0.0f, 1.0f);
+                imagination = new Imagination(0.0f, 1.0f);
+                imagination.start();
             }
         });
         pane.getChildren().add(buttonImagine);
@@ -540,7 +541,8 @@ public class AppFunctions {
 
     public static void runRandomCycleOfNN()
     {
-        update = false;
+        update = true;
+        updateInputSliders = true;
 
         neuralNetwork.neuralNetParameters.input.clear();
         for(int i = 0; i < neuralNetwork.neuralNetParameters.topology.get(0); i++)
@@ -561,11 +563,13 @@ public class AppFunctions {
         showVectorValues("Outputs: ", neuralNetwork.neuralNetParameters.result);
 
         update = true;
+        updateInputSliders = true;
     }
 
     public static void runCycleOfNN()
     {
-        update = false;
+        update = true;
+        updateInputSliders = true;
 
         showVectorValues("Inputs:", neuralNetwork.neuralNetParameters.input);
         neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
@@ -578,38 +582,50 @@ public class AppFunctions {
         showVectorValues("Outputs: ", neuralNetwork.neuralNetParameters.result);
 
         update = true;
+        updateInputSliders = true;
     }
 
-    public static void imaginationOfNN(float minInValue, float maxInValue)
+    public static class Imagination extends Thread
     {
-        update = false;
-        updateInputSliders = false;
-
-        try{
-            neuralNetwork.neuralNetParameters.target.clear();
-            for (Slider output : sliderOutputs)
-            {
-                neuralNetwork.neuralNetParameters.target.add((float)output.getValue());
-            }
-
-            showVectorValues("Feed outputs:", neuralNetwork.neuralNetParameters.target);
-            neuralNetwork.neuralNetParameters.input.clear();
-            neuralNetwork.neuralNetParameters.input = neuralNetwork.
-                    imagine(neuralNetwork.neuralNetParameters.target, minInValue, maxInValue);
-            neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
-
-            assert(neuralNetwork.neuralNetParameters.input.size() ==
-                    neuralNetwork.neuralNetParameters.topology.get(0));
-
-            // Collect the net's actual results:
-            neuralNetwork.getResults(neuralNetwork.neuralNetParameters.result);
-            showVectorValues("Outputs: ", neuralNetwork.neuralNetParameters.result);
-        }catch (Exception e)
+        private float minInValue, maxInValue;
+        public Imagination(float minInValue, float maxInValue)
         {
-            e.printStackTrace();
+            this.minInValue = minInValue;
+            this.maxInValue = maxInValue;
         }
 
-        update = true;
-        updateInputSliders = true;
+        @Override
+        public void run()
+        {
+            update = true;
+            updateInputSliders = true;
+
+            try{
+                neuralNetwork.neuralNetParameters.target.clear();
+                for (Slider output : sliderOutputs)
+                {
+                    neuralNetwork.neuralNetParameters.target.add((float)output.getValue());
+                }
+
+                showVectorValues("Feed outputs:", neuralNetwork.neuralNetParameters.target);
+                neuralNetwork.neuralNetParameters.input.clear();
+                neuralNetwork.neuralNetParameters.input = neuralNetwork.
+                        imagine(neuralNetwork.neuralNetParameters.target, this.minInValue, this.maxInValue);
+                neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
+
+                assert(neuralNetwork.neuralNetParameters.input.size() ==
+                        neuralNetwork.neuralNetParameters.topology.get(0));
+
+                // Collect the net's actual results:
+                neuralNetwork.getResults(neuralNetwork.neuralNetParameters.result);
+                showVectorValues("Outputs: ", neuralNetwork.neuralNetParameters.result);
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            update = true;
+            updateInputSliders = true;
+        }
     }
 }
