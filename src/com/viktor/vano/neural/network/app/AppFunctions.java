@@ -107,11 +107,13 @@ public class AppFunctions {
 
                 if(neuralNetParameters == null && filesOK)
                 {
+                    enableActionButtons();
                     createNewNeuralNetwork();
                     createNewNeuralButtons();
                     createNewSlidersAndTextFields();
                 }else if(neuralNetParameters != null && !filesOK)
                 {
+                    disableActionButtons();
                     removeOldChildren();
                 }else if(neuralNetParameters != null)
                 {
@@ -191,10 +193,7 @@ public class AppFunctions {
         pane.getChildren().add(buttonImagine);
 
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
-            buttonTrain.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || update);
-            buttonRandomRun.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || update);
             buttonFile.setDisable(neuralNetwork != null && (neuralNetwork.isNetTraining() || update));
-            buttonImagine.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || update);
 
             if(stageReference.getWidth() != stageWidth || stageReference.getHeight() != stageHeight)
             {
@@ -215,14 +214,10 @@ public class AppFunctions {
                         buttonNeurons.get(i).get(l).setStyle(colorStyle(neuralNetwork.getNeuronOutput(i,l)));
                     }
                 }
-
-                for(int l = 0; l < neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1); l++)
-                {
-                    sliderOutputs.get(l).setValue(neuralNetwork.neuralNetParameters.result.get(l));
-                }
             }
 
-            if(updateInputSliders)
+            if(updateInputSliders &&
+               neuralNetwork.neuralNetParameters.input.size() == neuralNetParameters.topology.get(0))
             {
                 updateInputSliders = false;
                 for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
@@ -233,6 +228,20 @@ public class AppFunctions {
         }));
         timelineRefresh.setCycleCount(Timeline.INDEFINITE);
         timelineRefresh.play();
+    }
+
+    private static void disableActionButtons()
+    {
+        buttonTrain.setDisable(true);
+        buttonRandomRun.setDisable(true);
+        buttonImagine.setDisable(true);
+    }
+
+    private static void enableActionButtons()
+    {
+        buttonTrain.setDisable(false);
+        buttonRandomRun.setDisable(false);
+        buttonImagine.setDisable(false);
     }
 
     private static void removeOldChildren()
@@ -541,6 +550,7 @@ public class AppFunctions {
 
     public static void runRandomCycleOfNN()
     {
+        disableActionButtons();
         update = true;
         updateInputSliders = true;
 
@@ -564,10 +574,12 @@ public class AppFunctions {
 
         update = true;
         updateInputSliders = true;
+        enableActionButtons();
     }
 
     public static void runCycleOfNN()
     {
+        disableActionButtons();
         update = true;
         updateInputSliders = true;
 
@@ -583,6 +595,7 @@ public class AppFunctions {
 
         update = true;
         updateInputSliders = true;
+        enableActionButtons();
     }
 
     public static class Imagination extends Thread
@@ -597,20 +610,22 @@ public class AppFunctions {
         @Override
         public void run()
         {
+            disableActionButtons();
             update = true;
             updateInputSliders = true;
 
             try{
-                neuralNetwork.neuralNetParameters.target.clear();
+                final ArrayList<Float> dreamTarget = new ArrayList<>();
+                dreamTarget.clear();
                 for (Slider output : sliderOutputs)
                 {
-                    neuralNetwork.neuralNetParameters.target.add((float)output.getValue());
+                    dreamTarget.add((float)output.getValue());
                 }
 
-                showVectorValues("Feed outputs:", neuralNetwork.neuralNetParameters.target);
+                showVectorValues("Feed outputs:", dreamTarget);
                 neuralNetwork.neuralNetParameters.input.clear();
                 neuralNetwork.neuralNetParameters.input = neuralNetwork.
-                        imagine(neuralNetwork.neuralNetParameters.target, this.minInValue, this.maxInValue);
+                        imagine(dreamTarget, this.minInValue, this.maxInValue);
                 neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
 
                 assert(neuralNetwork.neuralNetParameters.input.size() ==
@@ -626,6 +641,7 @@ public class AppFunctions {
 
             update = true;
             updateInputSliders = true;
+            enableActionButtons();
         }
     }
 }

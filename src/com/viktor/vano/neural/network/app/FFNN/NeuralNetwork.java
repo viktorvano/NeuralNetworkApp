@@ -15,6 +15,7 @@ import static com.viktor.vano.neural.network.app.FFNN.FileManagement.writeToFile
 import static com.viktor.vano.neural.network.app.FFNN.GeneralFunctions.showVectorValues;
 import static com.viktor.vano.neural.network.app.FFNN.Weights.*;
 import static com.viktor.vano.neural.network.app.Variables.update;
+import static com.viktor.vano.neural.network.app.Variables.updateInputSliders;
 
 public class NeuralNetwork {
 
@@ -176,6 +177,8 @@ public class NeuralNetwork {
             plotSurvivorLosses(survivors, generation);
 
             System.out.println("Lowest loss of generation " + generation + " : " + survivors.get(0).getLoss());
+            update = true;
+            updateInputSliders = true;
             if(survivors.get(0).getLoss() < exitLoss)
             {
                 System.out.println("Imagination ended due to low loss with generation: " + generation);
