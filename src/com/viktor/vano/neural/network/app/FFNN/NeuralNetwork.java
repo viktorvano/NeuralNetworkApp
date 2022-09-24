@@ -141,7 +141,7 @@ public class NeuralNetwork {
         }
     }
 
-    public ArrayList<Float> imagine(@NotNull final ArrayList<Float> targetImaginationOutputs) throws Exception
+    public ArrayList<Float> imagine(@NotNull final ArrayList<Float> targetImaginationOutputs, float minInValue, float maxInValue) throws Exception
     {
         if(targetImaginationOutputs.size() != m_layers.get(m_layers.size() - 1).size() - 1)
             throw new Exception();
@@ -156,7 +156,7 @@ public class NeuralNetwork {
 
         for (int i=0; i<populationSize; i++)
         {
-            individuals.add(new Individual(targetImaginationOutputs, this));
+            individuals.add(new Individual(targetImaginationOutputs, this, minInValue, maxInValue));
         }
         sortTheBestIndividuals(individuals, survivors, survivorCount);
         plotSurvivorLosses(survivors, generation);
@@ -165,7 +165,13 @@ public class NeuralNetwork {
         {
             generation++;
             System.out.println("Generation: " + generation);
-            populateGeneration(individuals, survivors, populationSize, this, targetImaginationOutputs);
+            populateGeneration(individuals,
+                                survivors,
+                                populationSize,
+                                this,
+                                targetImaginationOutputs,
+                                minInValue,
+                                maxInValue);
             sortTheBestIndividuals(individuals, survivors, survivorCount);
             plotSurvivorLosses(survivors, generation);
 
@@ -220,7 +226,9 @@ public class NeuralNetwork {
                                            ArrayList<Individual> survivors,
                                            final int populationSize,
                                            NeuralNetwork neuralNetwork,
-                                           final ArrayList<Float> target)
+                                           final ArrayList<Float> target,
+                                           float minInValue,
+                                           float maxInValue)
     {
         individuals.clear();
         //add the survivors to the new generation
@@ -234,14 +242,14 @@ public class NeuralNetwork {
             int randValue =  (int)(Math.round(Math.random()*50.0));
             if(randValue < 10)
             {
-                individuals.add(new Individual(target, neuralNetwork));
+                individuals.add(new Individual(target, neuralNetwork, minInValue, maxInValue));
             }else if(randValue < 20)
             {
                 //alter one input value - Random iteration
                 int randomSurvivorIndex = (int)(Math.round(Math.random()*survivors.size()));
                 if(randomSurvivorIndex == survivors.size())
                     randomSurvivorIndex--;
-                Individual individual = new Individual(target, neuralNetwork);
+                Individual individual = new Individual(target, neuralNetwork, minInValue, maxInValue);
                 final int inputSize = individual.input.size();
                 for(int i=0; i<inputSize; i++)//copy all genes
                 {
@@ -277,7 +285,7 @@ public class NeuralNetwork {
                 int randomSurvivorIndex = (int)(Math.round(Math.random()*survivors.size()));
                 if(randomSurvivorIndex == survivors.size())
                     randomSurvivorIndex--;
-                Individual individual = new Individual(target, neuralNetwork);
+                Individual individual = new Individual(target, neuralNetwork, minInValue, maxInValue);
                 final int inputSize = individual.input.size();
                 for(int i=0; i<inputSize; i++)//copy all genes
                 {
@@ -288,7 +296,7 @@ public class NeuralNetwork {
                 int randomGeneIndex = (int)(Math.round(Math.random()*individual.input.size()));
                 if(randomGeneIndex == individual.input.size())
                     randomGeneIndex--;
-                individual.input.set(randomGeneIndex, ((float)Math.random() * 2.0f) - 1.0f);
+                individual.input.set(randomGeneIndex, individual.randomValue(minInValue, maxInValue));
                 individuals.add(individual);
             }else if(randValue < 40)
             {
@@ -302,7 +310,7 @@ public class NeuralNetwork {
                     randomSurvivorIndexB--;
                 final Individual individualA = survivors.get(randomSurvivorIndexA);
                 final Individual individualB = survivors.get(randomSurvivorIndexB);
-                Individual individual = new Individual(target, neuralNetwork);
+                Individual individual = new Individual(target, neuralNetwork, minInValue, maxInValue);
                 final int inputSize = individual.input.size();
                 for(int i=0; i<inputSize; i++)
                 {
@@ -316,7 +324,7 @@ public class NeuralNetwork {
             }else
             {
                 //Orgy
-                Individual individual = new Individual(target, neuralNetwork);
+                Individual individual = new Individual(target, neuralNetwork, minInValue, maxInValue);
                 final int inputSize = individual.input.size();
                 for(int i=0; i<inputSize; i++)
                 {
@@ -523,18 +531,20 @@ public class NeuralNetwork {
         private ArrayList<Float> input, result;
         private final ArrayList<Float> target;
         private NeuralNetwork neuralNetwork;
-        private float loss;
+        private float loss, min, max;
 
-        public Individual(ArrayList<Float> target, @NotNull NeuralNetwork neuralNetwork)
+        public Individual(ArrayList<Float> target, @NotNull NeuralNetwork neuralNetwork, float min, float max)
         {
             this.target = target;
             this.input = new ArrayList<>();
             this.result = new ArrayList<>();
             this.neuralNetwork = neuralNetwork;
+            this.min = min;
+            this.max = max;
 
             for(int i=0; i<neuralNetwork.neuralNetParameters.topology.get(0); i++)
             {
-                input.add(((float)Math.random() * 2.0f) - 1.0f);
+                input.add(randomValue(this.min, this.max));
             }
         }
 
@@ -572,6 +582,14 @@ public class NeuralNetwork {
         public ArrayList<Float> getTarget()
         {
             return target;
+        }
+
+        public float randomValue(float min, float max)
+        {
+            float range = max - min;
+            float center = range / 2.0f;
+            float randomValue = ((float)Math.random() * range) - center;
+            return randomValue;
         }
     }
 }

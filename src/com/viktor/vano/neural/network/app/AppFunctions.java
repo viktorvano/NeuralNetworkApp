@@ -184,7 +184,7 @@ public class AppFunctions {
         buttonImagine.setOnAction(event -> {
             if(neuralNetwork != null)
             {
-                imaginationOfNN();
+                imaginationOfNN(0.0f, 1.0f);
             }
         });
         pane.getChildren().add(buttonImagine);
@@ -580,7 +580,7 @@ public class AppFunctions {
         update = true;
     }
 
-    public static void imaginationOfNN()
+    public static void imaginationOfNN(float minInValue, float maxInValue)
     {
         update = false;
         updateInputSliders = false;
@@ -594,7 +594,8 @@ public class AppFunctions {
 
             showVectorValues("Feed outputs:", neuralNetwork.neuralNetParameters.target);
             neuralNetwork.neuralNetParameters.input.clear();
-            neuralNetwork.neuralNetParameters.input = neuralNetwork.imagine(neuralNetwork.neuralNetParameters.target);
+            neuralNetwork.neuralNetParameters.input = neuralNetwork.
+                    imagine(neuralNetwork.neuralNetParameters.target, minInValue, maxInValue);
             neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
 
             assert(neuralNetwork.neuralNetParameters.input.size() ==
