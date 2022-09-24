@@ -229,13 +229,13 @@ public class NeuralNetwork {
 
         //fill the population with new variants of the individuals
         do {
-            int randValue =  (int)(Math.round(Math.random()*30.0));
+            int randValue =  (int)(Math.round(Math.random()*50.0));
             if(randValue < 10)
             {
                 individuals.add(new Individual(target, neuralNetwork));
             }else if(randValue < 20)
             {
-                //alter one input value
+                //alter one input value - Random iteration
                 individuals.add(survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0))));
                 int randomIndexOfLastIndividualInput = (int)Math.round(
                         Math.random()*(individuals.get(individuals.size()-1).input.size()-1));
@@ -244,7 +244,9 @@ public class NeuralNetwork {
                 if(currentValue + delta >= 1.0f)
                 {
                     currentValue -= delta;
-                }else
+                } else if (currentValue - delta <= -1.0f) {
+                    currentValue += delta;
+                } else
                 {
                     if(Math.random() > 0.5)
                     {
@@ -258,13 +260,41 @@ public class NeuralNetwork {
                         input.set(randomIndexOfLastIndividualInput, currentValue);
             }else if(randValue < 30)
             {
-                //randomly change one input value
+                //randomly change one input value - Mutation
                 individuals.add(survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0))));
                 float randomValue = ((float)Math.random() * 2.0f) - 1.0f;
                 int randomIndexOfLastIndividualInput = (int)Math.round(
                         Math.random()*(individuals.get(individuals.size()-1).input.size()-1));
                 individuals.get(individuals.size()-1).
                         input.set(randomIndexOfLastIndividualInput, randomValue);
+            }else if(randValue < 40)
+            {
+                //Uniform Crossover
+                final Individual individualA = survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0)));
+                final Individual individualB = survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0)));
+                Individual individual = new Individual(target, neuralNetwork);
+                final int inputSize = individual.input.size();
+                for(int i=0; i<inputSize; i++)
+                {
+                    //set each input one by one from two random survivors
+                    if(Math.random() < 0.5)
+                        individual.input.set(i, individualA.input.get(i));
+                    else
+                        individual.input.set(i, individualB.input.get(i));
+                }
+                individuals.add(individual);
+            }else
+            {
+                //Orgy
+                Individual individual = new Individual(target, neuralNetwork);
+                final int inputSize = individual.input.size();
+                for(int i=0; i<inputSize; i++)
+                {
+                    //set each input one by one from a random survivor
+                    Individual randomSurvivor = survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0)));
+                    individual.input.set(i, randomSurvivor.input.get(i));
+                }
+                individuals.add(individual);
             }
         }while (individuals.size() != populationSize);
     }
