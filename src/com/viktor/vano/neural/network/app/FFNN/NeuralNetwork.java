@@ -261,10 +261,10 @@ public class NeuralNetwork {
                     randomGeneIndex--;
                 float geneValue = individual.input.get(randomGeneIndex);
                 final float delta = 0.001f;
-                if(geneValue + delta >= 1.0f)
+                if(geneValue + delta >= maxInValue)
                 {
                     geneValue -= delta;
-                } else if (geneValue - delta <= -1.0f) {
+                } else if (geneValue - delta <= minInValue) {
                     geneValue += delta;
                 } else
                 {
