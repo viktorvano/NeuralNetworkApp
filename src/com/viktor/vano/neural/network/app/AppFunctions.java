@@ -177,10 +177,23 @@ public class AppFunctions {
         });
         pane.getChildren().add(buttonRandomRun);
 
+        buttonImagine = new Button("Imagine");
+        buttonImagine.setLayoutX(stageWidth*0.85);
+        buttonImagine.setLayoutY(stageHeight*0.15);
+        buttonImagine.setDisable(true);
+        buttonImagine.setOnAction(event -> {
+            if(neuralNetwork != null)
+            {
+                imaginationOfNN();
+            }
+        });
+        pane.getChildren().add(buttonImagine);
+
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
             buttonTrain.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || update);
             buttonRandomRun.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || update);
             buttonFile.setDisable(neuralNetwork != null && (neuralNetwork.isNetTraining() || update));
+            buttonImagine.setDisable(neuralNetwork == null ||  neuralNetwork.isNetTraining() || update);
 
             if(stageReference.getWidth() != stageWidth || stageReference.getHeight() != stageHeight)
             {
@@ -471,6 +484,9 @@ public class AppFunctions {
         buttonRandomRun.setLayoutX(stageWidth*0.85);
         buttonRandomRun.setLayoutY(stageHeight*0.10);
 
+        buttonImagine.setLayoutX(stageWidth*0.85);
+        buttonImagine.setLayoutY(stageHeight*0.15);
+
         if(neuralNetParameters != null && filesOK)
         {
             for (int i = 0; i < neuralNetParameters.topology.size(); i++)
@@ -551,6 +567,36 @@ public class AppFunctions {
         // Collect the net's actual results:
         neuralNetwork.getResults(neuralNetwork.neuralNetParameters.result);
         showVectorValues("Outputs: ", neuralNetwork.neuralNetParameters.result);
+
+        update = true;
+    }
+
+    public static void imaginationOfNN()
+    {
+        update = false;
+
+        try{
+            neuralNetwork.neuralNetParameters.target.clear();
+            for (Slider output : sliderOutputs)
+            {
+                neuralNetwork.neuralNetParameters.target.add((float)output.getValue());
+            }
+
+            showVectorValues("Feed outputs:", neuralNetwork.neuralNetParameters.target);
+            neuralNetwork.neuralNetParameters.input.clear();
+            neuralNetwork.neuralNetParameters.input = neuralNetwork.imagine(neuralNetwork.neuralNetParameters.target);
+            //neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
+
+            assert(neuralNetwork.neuralNetParameters.input.size() ==
+                    neuralNetwork.neuralNetParameters.topology.get(0));
+
+            // Collect the net's actual results:
+            neuralNetwork.getResults(neuralNetwork.neuralNetParameters.result);
+            showVectorValues("Outputs: ", neuralNetwork.neuralNetParameters.result);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
         update = true;
     }

@@ -164,10 +164,12 @@ public class NeuralNetwork {
         for(int i=0; i<maxGenerations; i++)
         {
             generation++;
+            System.out.println("Generation: " + generation);
             populateGeneration(individuals, survivors, populationSize, this, targetImaginationOutputs);
             sortTheBestIndividuals(individuals, survivors, survivorCount);
             plotSurvivorLosses(survivors, generation);
 
+            System.out.println("Lowest loss of generation " + generation + " : " + survivors.get(0).getLoss());
             if(survivors.get(0).getLoss() < exitLoss)
             {
                 System.out.println("Imagination ended due to low loss with generation: " + generation);
@@ -236,42 +238,70 @@ public class NeuralNetwork {
             }else if(randValue < 20)
             {
                 //alter one input value - Random iteration
-                individuals.add(survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0))));
-                int randomIndexOfLastIndividualInput = (int)Math.round(
-                        Math.random()*(individuals.get(individuals.size()-1).input.size()-1));
-                float currentValue = individuals.get(individuals.size()-1).input.get(randomIndexOfLastIndividualInput);
-                final float delta = 0.001f;
-                if(currentValue + delta >= 1.0f)
+                int randomSurvivorIndex = (int)(Math.round(Math.random()*survivors.size()));
+                if(randomSurvivorIndex == survivors.size())
+                    randomSurvivorIndex--;
+                Individual individual = new Individual(target, neuralNetwork);
+                final int inputSize = individual.input.size();
+                for(int i=0; i<inputSize; i++)//copy all genes
                 {
-                    currentValue -= delta;
-                } else if (currentValue - delta <= -1.0f) {
-                    currentValue += delta;
+                    individual.input.set(i, individuals.get(randomSurvivorIndex).input.get(i));
+                }
+
+                int randomGeneIndex = (int)(Math.round(Math.random()*individual.input.size()));
+                if(randomGeneIndex == individual.input.size())
+                    randomGeneIndex--;
+                float geneValue = individual.input.get(randomGeneIndex);
+                final float delta = 0.001f;
+                if(geneValue + delta >= 1.0f)
+                {
+                    geneValue -= delta;
+                } else if (geneValue - delta <= -1.0f) {
+                    geneValue += delta;
                 } else
                 {
                     if(Math.random() > 0.5)
                     {
-                        currentValue += delta;
+                        geneValue += delta;
                     }else
                     {
-                        currentValue -= delta;
+                        geneValue -= delta;
                     }
                 }
-                individuals.get(individuals.size()-1).
-                        input.set(randomIndexOfLastIndividualInput, currentValue);
+                individual.input.set(randomGeneIndex, geneValue);
+                //add the individual
+                individuals.add(individual);
             }else if(randValue < 30)
             {
                 //randomly change one input value - Mutation
-                individuals.add(survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0))));
-                float randomValue = ((float)Math.random() * 2.0f) - 1.0f;
-                int randomIndexOfLastIndividualInput = (int)Math.round(
-                        Math.random()*(individuals.get(individuals.size()-1).input.size()-1));
-                individuals.get(individuals.size()-1).
-                        input.set(randomIndexOfLastIndividualInput, randomValue);
+                int randomSurvivorIndex = (int)(Math.round(Math.random()*survivors.size()));
+                if(randomSurvivorIndex == survivors.size())
+                    randomSurvivorIndex--;
+                Individual individual = new Individual(target, neuralNetwork);
+                final int inputSize = individual.input.size();
+                for(int i=0; i<inputSize; i++)//copy all genes
+                {
+                    individual.input.set(i, individuals.get(randomSurvivorIndex).input.get(i));
+                }
+
+                //mutate a random gene
+                int randomGeneIndex = (int)(Math.round(Math.random()*individual.input.size()));
+                if(randomGeneIndex == individual.input.size())
+                    randomGeneIndex--;
+                individual.input.set(randomGeneIndex, ((float)Math.random() * 2.0f) - 1.0f);
+                individuals.add(individual);
             }else if(randValue < 40)
             {
                 //Uniform Crossover
-                final Individual individualA = survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0)));
-                final Individual individualB = survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0)));
+                int randomSurvivorIndexA = (int)(Math.round(Math.random()*survivors.size()));
+                if(randomSurvivorIndexA == survivors.size())
+                    randomSurvivorIndexA--;
+
+                int randomSurvivorIndexB = (int)(Math.round(Math.random()*survivors.size()));
+                if(randomSurvivorIndexB == survivors.size())
+                    randomSurvivorIndexB--;
+                final Individual individualA = survivors.get(randomSurvivorIndexA);
+                final Individual individualB = survivors.get(randomSurvivorIndexB);
                 Individual individual = new Individual(target, neuralNetwork);
                 final int inputSize = individual.input.size();
                 for(int i=0; i<inputSize; i++)
@@ -291,7 +321,10 @@ public class NeuralNetwork {
                 for(int i=0; i<inputSize; i++)
                 {
                     //set each input one by one from a random survivor
-                    Individual randomSurvivor = survivors.get((int)(Math.round(Math.random()*survivors.size()-1.0)));
+                    int randomSurvivorIndex = (int)(Math.round(Math.random()*survivors.size()));
+                    if(randomSurvivorIndex == survivors.size())
+                        randomSurvivorIndex--;
+                    Individual randomSurvivor = survivors.get(randomSurvivorIndex);
                     individual.input.set(i, randomSurvivor.input.get(i));
                 }
                 individuals.add(individual);

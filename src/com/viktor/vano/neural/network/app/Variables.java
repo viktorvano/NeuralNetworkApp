@@ -15,7 +15,7 @@ public class Variables {
     public static int stageWidth = 800;
     public static final int bottomOffset = 80;
     public static final Pane pane = new Pane();
-    public static Button buttonFile, buttonTrain, buttonRandomRun;
+    public static Button buttonFile, buttonTrain, buttonRandomRun, buttonImagine;
     public static Label labelTopologyFile, labelTrainingFile, labelTrainingStatusFile, labelWeightsFile;
     public static FileChooser fileChooser;
     public static ProgressBar progressBarTraining;
