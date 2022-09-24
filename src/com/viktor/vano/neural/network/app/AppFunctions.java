@@ -220,6 +220,15 @@ public class AppFunctions {
                     sliderOutputs.get(l).setValue(neuralNetwork.neuralNetParameters.result.get(l));
                 }
             }
+
+            if(updateInputSliders)
+            {
+                updateInputSliders = false;
+                for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
+                {
+                    sliderInputs.get(l).setValue(neuralNetwork.neuralNetParameters.input.get(l));
+                }
+            }
         }));
         timelineRefresh.setCycleCount(Timeline.INDEFINITE);
         timelineRefresh.play();
@@ -574,6 +583,7 @@ public class AppFunctions {
     public static void imaginationOfNN()
     {
         update = false;
+        updateInputSliders = false;
 
         try{
             neuralNetwork.neuralNetParameters.target.clear();
@@ -585,7 +595,7 @@ public class AppFunctions {
             showVectorValues("Feed outputs:", neuralNetwork.neuralNetParameters.target);
             neuralNetwork.neuralNetParameters.input.clear();
             neuralNetwork.neuralNetParameters.input = neuralNetwork.imagine(neuralNetwork.neuralNetParameters.target);
-            //neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
+            neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);
 
             assert(neuralNetwork.neuralNetParameters.input.size() ==
                     neuralNetwork.neuralNetParameters.topology.get(0));
@@ -599,5 +609,6 @@ public class AppFunctions {
         }
 
         update = true;
+        updateInputSliders = true;
     }
 }

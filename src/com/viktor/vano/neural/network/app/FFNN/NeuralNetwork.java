@@ -148,7 +148,7 @@ public class NeuralNetwork {
 
         final int populationSize = 500;
         final int survivorCount = 50;
-        final float exitLoss = 0.001f;
+        final float exitLoss = 0.01f;
         int generation = 0;
         final int maxGenerations = 3000;
         ArrayList<Individual> individuals = new ArrayList<>();
