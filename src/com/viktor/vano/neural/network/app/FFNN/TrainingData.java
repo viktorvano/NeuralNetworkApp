@@ -20,38 +20,6 @@ public class TrainingData {
         outputLabels = new ArrayList<>();
     }
 
-    public void loadLabels(@NotNull String trainingFilePath)
-    {
-        ArrayList<String> fileContent = readOrCreateFile(trainingFilePath);
-        String firstLine;
-
-        try
-        {
-            firstLine = fileContent.get(0);
-
-            if(firstLine.contains(";;"))
-                firstLine = firstLine.replace(';', '\t');
-            else if(firstLine.contains(",,"))
-                firstLine = firstLine.replace(',', '\t');
-
-            String[] strings = firstLine.split("\t\t");
-            String[] inStrings, outStrings;
-            inStrings = strings[0].split("\t");
-            outStrings = strings[1].split("\t");
-
-            neuralNetParameters.trainData.inputLabels.clear();
-            neuralNetParameters.trainData.inputLabels.addAll(Arrays.asList(inStrings));
-
-            neuralNetParameters.trainData.outputLabels.clear();
-            neuralNetParameters.trainData.outputLabels.addAll(Arrays.asList(outStrings));
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-            customPrompt("File Chooser", "Training file can not read the first line properly: "
-                    + trainingFile.getPath(), Alert.AlertType.WARNING);
-        }
-    }
-
     public static int getNextInputs(NeuralNetParameters neuralNetParameters)
     {
         neuralNetParameters.input.clear();

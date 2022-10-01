@@ -77,7 +77,7 @@ public class AppFunctions {
                             + trainingFile.getPath(), Alert.AlertType.WARNING);
                 }else
                 {
-                    neuralNetParameters.trainData.loadLabels(trainingFile.getPath());
+                    loadLabels(trainingFile.getPath());
                 }
 
                 if(trainingFile.getPath().length() > 50)
@@ -236,6 +236,46 @@ public class AppFunctions {
         timelineRefresh.play();
     }
 
+    private static void loadLabels(@NotNull String trainingFilePath)
+    {
+        ArrayList<String> fileContent = readOrCreateFile(trainingFilePath);
+        String firstLine;
+
+        try
+        {
+            firstLine = fileContent.get(0);
+
+            if(firstLine.contains(";;"))
+                firstLine = firstLine.replace(';', '\t');
+            else if(firstLine.contains(",,"))
+                firstLine = firstLine.replace(',', '\t');
+
+            String[] strings = firstLine.split("\t\t");
+            String[] inStrings, outStrings;
+            inStrings = strings[0].split("\t");
+            outStrings = strings[1].split("\t");
+
+            if(inputLabels == null)
+                inputLabels = new ArrayList<>();
+            else
+                inputLabels.clear();
+
+            inputLabels.addAll(Arrays.asList(inStrings));
+
+            if(outputLabels == null)
+                outputLabels = new ArrayList<>();
+            else
+                outputLabels.clear();
+
+            outputLabels.addAll(Arrays.asList(outStrings));
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            customPrompt("File Chooser", "Training file can not read the first line properly: "
+                    + trainingFile.getPath(), Alert.AlertType.WARNING);
+        }
+    }
+
     private static void disableActionButtons()
     {
         buttonTrain.setDisable(true);
@@ -350,7 +390,7 @@ public class AppFunctions {
         {
             try
             {
-                labelInputs.add(new Label(neuralNetParameters.trainData.inputLabels.get(l)));
+                labelInputs.add(new Label(inputLabels.get(l)));
                 labelInputs.get(l).setLayoutX(0.05*stageWidth);
                 labelInputs.get(l).setLayoutY(0.24*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
@@ -415,7 +455,7 @@ public class AppFunctions {
         {
             try
             {
-                labelOutputs.add(new Label(neuralNetParameters.trainData.outputLabels.get(l)));
+                labelOutputs.add(new Label(outputLabels.get(l)));
                 labelOutputs.get(l).setLayoutX(0.8*stageWidth);
                 labelOutputs.get(l).setLayoutY(0.24*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
