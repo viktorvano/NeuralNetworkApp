@@ -269,6 +269,12 @@ public class AppFunctions {
         neuralNetwork = null;
         neuralNetParameters = null;
 
+        for(Label in : labelInputs)
+        {
+            pane.getChildren().remove(in);
+        }
+        labelInputs.clear();
+
         for (Slider slider : sliderInputs)
         {
             pane.getChildren().remove(slider);
@@ -280,6 +286,12 @@ public class AppFunctions {
             pane.getChildren().remove(textField);
         }
         textFieldInputs.clear();
+
+        for(Label out : labelOutputs)
+        {
+            pane.getChildren().remove(out);
+        }
+        labelOutputs.clear();
 
         for (Slider slider : sliderOutputs)
         {
@@ -404,7 +416,7 @@ public class AppFunctions {
             try
             {
                 labelOutputs.add(new Label(neuralNetParameters.trainData.outputLabels.get(l)));
-                labelOutputs.get(l).setLayoutX(0.05*stageWidth);
+                labelOutputs.get(l).setLayoutX(0.8*stageWidth);
                 labelOutputs.get(l).setLayoutY(0.24*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                         ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
@@ -556,6 +568,11 @@ public class AppFunctions {
 
             for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
             {
+                labelInputs.get(l).setLayoutX(0.05*stageWidth);
+                labelInputs.get(l).setLayoutY(0.24*stageHeight +
+                        (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                        ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+
                 sliderInputs.get(l).setLayoutX(0.05*stageWidth);
                 sliderInputs.get(l).setLayoutY(0.25*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
@@ -569,6 +586,11 @@ public class AppFunctions {
 
             for(int l = 0; l < neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1); l++)
             {
+                labelOutputs.get(l).setLayoutX(0.8*stageWidth);
+                labelOutputs.get(l).setLayoutY(0.24*stageHeight +
+                        (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                        ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+
                 sliderOutputs.get(l).setLayoutX(0.8*stageWidth);
                 sliderOutputs.get(l).setLayoutY(0.25*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) * l +
