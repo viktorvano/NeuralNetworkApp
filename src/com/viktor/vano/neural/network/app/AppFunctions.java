@@ -1,5 +1,6 @@
 package com.viktor.vano.neural.network.app;
 
+import com.sun.istack.internal.NotNull;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetParameters;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetwork;
 import javafx.animation.KeyFrame;
@@ -76,34 +77,7 @@ public class AppFunctions {
                             + trainingFile.getPath(), Alert.AlertType.WARNING);
                 }else
                 {
-                    ArrayList<String> fileContent = readOrCreateFile(trainingFile.getPath());
-                    String firstLine;
-
-                    try
-                    {
-                        firstLine = fileContent.get(0);
-
-                        if(firstLine.contains(";;"))
-                            firstLine = firstLine.replace(';', '\t');
-                        else if(firstLine.contains(",,"))
-                            firstLine = firstLine.replace(',', '\t');
-
-                        String[] strings = firstLine.split("\t\t");
-                        String[] inStrings, outStrings;
-                        inStrings = strings[0].split("\t");
-                        outStrings = strings[1].split("\t");
-
-                        neuralNetParameters.trainData.inputLabels.clear();
-                        neuralNetParameters.trainData.inputLabels.addAll(Arrays.asList(inStrings));
-
-                        neuralNetParameters.trainData.outputLabels.clear();
-                        neuralNetParameters.trainData.outputLabels.addAll(Arrays.asList(outStrings));
-                    }catch (Exception e)
-                    {
-                        e.printStackTrace();
-                        customPrompt("File Chooser", "Training file can not read the first line properly: "
-                                + trainingFile.getPath(), Alert.AlertType.WARNING);
-                    }
+                    neuralNetParameters.trainData.loadLabels(trainingFile.getPath());
                 }
 
                 if(trainingFile.getPath().length() > 50)
