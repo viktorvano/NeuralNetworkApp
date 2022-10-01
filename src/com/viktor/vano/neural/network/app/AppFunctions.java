@@ -72,6 +72,18 @@ public class AppFunctions {
                     filesOK = false;
                     customPrompt("File Chooser", "Training file can not be read: "
                             + trainingFile.getPath(), Alert.AlertType.WARNING);
+                }else
+                {
+                    //TODO: Read the first line and make labels
+                    if(stringInputs != null)
+                        stringInputs.clear();
+                    else
+                        stringInputs = new ArrayList<>();
+
+                    if(stringOutputs != null)
+                        stringOutputs.clear();
+                    else
+                        stringOutputs = new ArrayList<>();
                 }
 
                 if(trainingFile.getPath().length() > 50)
@@ -322,12 +334,30 @@ public class AppFunctions {
         neuralNetwork.neuralNetParameters.input.clear();
         neuralNetwork.neuralNetParameters.target.clear();
         neuralNetwork.neuralNetParameters.result.clear();
+        labelInputs = new ArrayList<>();
+        labelOutputs = new ArrayList<>();
         sliderInputs = new ArrayList<>();
         sliderOutputs = new ArrayList<>();
         textFieldInputs = new ArrayList<>();
         textFieldOutputs = new ArrayList<>();
         for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
         {
+            if(stringInputs != null)
+            {
+                try
+                {
+                    labelInputs.add(new Label(stringInputs.get(l)));
+                    labelInputs.get(l).setLayoutX(0.05*stageWidth);
+                    labelInputs.get(l).setLayoutY(0.24*stageHeight +
+                            (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                            ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+                    pane.getChildren().add(labelInputs.get(l));
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
             sliderInputs.add(new Slider(-1.0, 1.0, 0));
             sliderInputs.get(l).setPrefWidth(110);
             sliderInputs.get(l).setLayoutX(0.05*stageWidth);
@@ -380,6 +410,22 @@ public class AppFunctions {
 
         for(int l = 0; l < neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1); l++)
         {
+            if(stringOutputs != null)
+            {
+                try
+                {
+                    labelOutputs.add(new Label(stringOutputs.get(l)));
+                    labelOutputs.get(l).setLayoutX(0.05*stageWidth);
+                    labelOutputs.get(l).setLayoutY(0.24*stageHeight +
+                            (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                            ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+                    pane.getChildren().add(labelOutputs.get(l));
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
             sliderOutputs.add(new Slider(-1.0, 1.0, 0));
             sliderOutputs.get(l).setPrefWidth(110);
             sliderOutputs.get(l).setLayoutX(0.8*stageWidth);
