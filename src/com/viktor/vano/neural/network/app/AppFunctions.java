@@ -523,12 +523,12 @@ public class AppFunctions {
             for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
             {
                 sliderInputs.get(l).setLayoutX(0.05*stageWidth);
-                sliderInputs.get(l).setLayoutY(0.24*stageHeight +
+                sliderInputs.get(l).setLayoutY(0.25*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                         ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
 
                 textFieldInputs.get(l).setLayoutX(0.05*stageWidth);
-                textFieldInputs.get(l).setLayoutY(0.28*stageHeight +
+                textFieldInputs.get(l).setLayoutY(0.27*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                         ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
             }
