@@ -3,12 +3,12 @@ package com.viktor.vano.neural.network.app.FFNN;
 import java.util.ArrayList;
 
 public class TrainingData {
-    public ArrayList<String> InputLabels, OutputLabels;
+    public ArrayList<String> inputLabels, outputLabels;
 
     public TrainingData()
     {
-        InputLabels = new ArrayList<>();
-        OutputLabels = new ArrayList<>();
+        inputLabels = new ArrayList<>();
+        outputLabels = new ArrayList<>();
     }
     public static int getNextInputs(NeuralNetParameters neuralNetParameters)
     {

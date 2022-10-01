@@ -27,7 +27,6 @@ public class Variables {
     public static ArrayList<ArrayList<Button>> buttonNeurons;
     public static ArrayList<Slider> sliderInputs, sliderOutputs;
     public static ArrayList<TextField> textFieldInputs, textFieldOutputs;
-    public static ArrayList<String> stringInputs, stringOutputs;
     public static ArrayList<Label> labelInputs, labelOutputs;
     public static boolean update = false, updateInputSliders = false;
 
