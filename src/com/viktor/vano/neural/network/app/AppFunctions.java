@@ -1,5 +1,6 @@
 package com.viktor.vano.neural.network.app;
 
+import com.sun.istack.internal.NotNull;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetParameters;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetwork;
 import javafx.animation.KeyFrame;
@@ -13,8 +14,10 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
+import static com.viktor.vano.neural.network.app.FFNN.FileManagement.readOrCreateFile;
 import static com.viktor.vano.neural.network.app.FFNN.GeneralFunctions.showVectorValues;
 import static com.viktor.vano.neural.network.app.GUI.GUI.customPrompt;
 import static com.viktor.vano.neural.network.app.Variables.*;
@@ -72,6 +75,9 @@ public class AppFunctions {
                     filesOK = false;
                     customPrompt("File Chooser", "Training file can not be read: "
                             + trainingFile.getPath(), Alert.AlertType.WARNING);
+                }else
+                {
+                    loadLabels(trainingFile.getPath());
                 }
 
                 if(trainingFile.getPath().length() > 50)
@@ -230,6 +236,46 @@ public class AppFunctions {
         timelineRefresh.play();
     }
 
+    private static void loadLabels(@NotNull String trainingFilePath)
+    {
+        ArrayList<String> fileContent = readOrCreateFile(trainingFilePath);
+        String firstLine;
+
+        try
+        {
+            firstLine = fileContent.get(0);
+
+            if(firstLine.contains(";;"))
+                firstLine = firstLine.replace(';', '\t');
+            else if(firstLine.contains(",,"))
+                firstLine = firstLine.replace(',', '\t');
+
+            String[] strings = firstLine.split("\t\t");
+            String[] inStrings, outStrings;
+            inStrings = strings[0].split("\t");
+            outStrings = strings[1].split("\t");
+
+            if(inputLabels == null)
+                inputLabels = new ArrayList<>();
+            else
+                inputLabels.clear();
+
+            inputLabels.addAll(Arrays.asList(inStrings));
+
+            if(outputLabels == null)
+                outputLabels = new ArrayList<>();
+            else
+                outputLabels.clear();
+
+            outputLabels.addAll(Arrays.asList(outStrings));
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            customPrompt("File Chooser", "Training file can not read the first line properly: "
+                    + trainingFile.getPath(), Alert.AlertType.WARNING);
+        }
+    }
+
     private static void disableActionButtons()
     {
         buttonTrain.setDisable(true);
@@ -263,6 +309,12 @@ public class AppFunctions {
         neuralNetwork = null;
         neuralNetParameters = null;
 
+        for(Label in : labelInputs)
+        {
+            pane.getChildren().remove(in);
+        }
+        labelInputs.clear();
+
         for (Slider slider : sliderInputs)
         {
             pane.getChildren().remove(slider);
@@ -274,6 +326,12 @@ public class AppFunctions {
             pane.getChildren().remove(textField);
         }
         textFieldInputs.clear();
+
+        for(Label out : labelOutputs)
+        {
+            pane.getChildren().remove(out);
+        }
+        labelOutputs.clear();
 
         for (Slider slider : sliderOutputs)
         {
@@ -322,12 +380,27 @@ public class AppFunctions {
         neuralNetwork.neuralNetParameters.input.clear();
         neuralNetwork.neuralNetParameters.target.clear();
         neuralNetwork.neuralNetParameters.result.clear();
+        labelInputs = new ArrayList<>();
+        labelOutputs = new ArrayList<>();
         sliderInputs = new ArrayList<>();
         sliderOutputs = new ArrayList<>();
         textFieldInputs = new ArrayList<>();
         textFieldOutputs = new ArrayList<>();
         for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
         {
+            try
+            {
+                labelInputs.add(new Label(inputLabels.get(l)));
+                labelInputs.get(l).setLayoutX(0.06*stageWidth);
+                labelInputs.get(l).setLayoutY(0.2325*stageHeight +
+                        (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                        ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+                pane.getChildren().add(labelInputs.get(l));
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
             sliderInputs.add(new Slider(-1.0, 1.0, 0));
             sliderInputs.get(l).setPrefWidth(110);
             sliderInputs.get(l).setLayoutX(0.05*stageWidth);
@@ -380,6 +453,19 @@ public class AppFunctions {
 
         for(int l = 0; l < neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1); l++)
         {
+            try
+            {
+                labelOutputs.add(new Label(outputLabels.get(l)));
+                labelOutputs.get(l).setLayoutX(0.81*stageWidth);
+                labelOutputs.get(l).setLayoutY(0.2325*stageHeight +
+                        (0.75*stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) * l +
+                        ((stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) / 2) - bottomOffset);
+                pane.getChildren().add(labelOutputs.get(l));
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
             sliderOutputs.add(new Slider(-1.0, 1.0, 0));
             sliderOutputs.get(l).setPrefWidth(110);
             sliderOutputs.get(l).setLayoutX(0.8*stageWidth);
@@ -522,19 +608,29 @@ public class AppFunctions {
 
             for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
             {
+                labelInputs.get(l).setLayoutX(0.06*stageWidth);
+                labelInputs.get(l).setLayoutY(0.2325*stageHeight +
+                        (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
+                        ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
+
                 sliderInputs.get(l).setLayoutX(0.05*stageWidth);
-                sliderInputs.get(l).setLayoutY(0.24*stageHeight +
+                sliderInputs.get(l).setLayoutY(0.25*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                         ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
 
                 textFieldInputs.get(l).setLayoutX(0.05*stageWidth);
-                textFieldInputs.get(l).setLayoutY(0.28*stageHeight +
+                textFieldInputs.get(l).setLayoutY(0.27*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                         ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
             }
 
             for(int l = 0; l < neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1); l++)
             {
+                labelOutputs.get(l).setLayoutX(0.81*stageWidth);
+                labelOutputs.get(l).setLayoutY(0.2325*stageHeight +
+                        (0.75*stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) * l +
+                        ((stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) / 2) - bottomOffset);
+
                 sliderOutputs.get(l).setLayoutX(0.8*stageWidth);
                 sliderOutputs.get(l).setLayoutY(0.25*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1))) * l +
