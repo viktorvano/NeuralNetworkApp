@@ -1,0 +1,10 @@
+NDVI,Vlhkost_Pody,Teplota_Pody,Vlhkost_Vzduchu,Teplota_Vzduchu,pH_Pody,EC_Pody,Teplota_Pody,pH_Vody,EC_Vody,Teplota_Vody,,Zdravie_Rastliny,Faza_Klicenia,Faza_Rastu,Faza_Zberu,Potreba_Hnojiva,Potreba_pH-,Potreba_pH+,Potreba_Vody
+0,0,0,0,0,0,0,0,0,0,0,,0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0,1,0,0,,0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,1,0,0,0,,0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,1,1,0,0,,0,0,0,0,0,0,0,0
+0,1,0,1,0,1,0,1,0,0,0,,1,0,0,0,1,0,0,0
+0,0,0,1,1,1,0,0,0,1,0,,0,1,0,0,0,1,0,0
+1,0,1,0,1,0,1,0,1,1,1,,0,0,1,0,0,0,1,0
+0,1,0,1,1,1,0,1,0,1,0,,0,0,0,1,0,0,0,1
+0,0,0,0,0,0,1,0,0,0,1,,0,0,0,0,0,0,0,0
