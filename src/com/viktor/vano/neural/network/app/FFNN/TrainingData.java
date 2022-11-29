@@ -1,15 +1,6 @@
 package com.viktor.vano.neural.network.app.FFNN;
 
-import com.sun.istack.internal.NotNull;
-import javafx.scene.control.Alert;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import static com.viktor.vano.neural.network.app.FFNN.FileManagement.readOrCreateFile;
-import static com.viktor.vano.neural.network.app.GUI.GUI.customPrompt;
-import static com.viktor.vano.neural.network.app.Variables.neuralNetParameters;
-import static com.viktor.vano.neural.network.app.Variables.trainingFile;
 
 public class TrainingData {
     public ArrayList<String> inputLabels, outputLabels;
