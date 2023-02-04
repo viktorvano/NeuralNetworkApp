@@ -22,6 +22,7 @@ import static com.viktor.vano.neural.network.app.Variables.*;
 public class AppFunctions {
     public static void initializeLayout()
     {
+        createDirectoryIfNotExist("res");
         buttonFile = new Button("File");
         buttonFile.setLayoutX(stageWidth*0.05);
         buttonFile.setLayoutY(stageHeight*0.05);
@@ -643,5 +644,14 @@ public class AppFunctions {
             updateInputSliders = true;
             enableActionButtons();
         }
+    }
+
+    public static void createDirectoryIfNotExist(String directoryName)
+    {
+        File file = new File(directoryName);
+        if(file.mkdir())
+            System.out.println("New directory \"" + directoryName + "\" was created.");
+        else
+            System.out.println("Directory \"" + directoryName + "\" already exists.");
     }
 }
