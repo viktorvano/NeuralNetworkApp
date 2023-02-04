@@ -126,8 +126,8 @@ public class Weights {
             String[] inputs = inputLabels.split("\t");
             String[] outputs = outputLabels.split("\t");
 
-            neuralNetParameters.trainData.InputLabels.addAll(Arrays.asList(inputs));
-            neuralNetParameters.trainData.OutputLabels.addAll(Arrays.asList(outputs));
+            neuralNetParameters.trainData.inputLabels.addAll(Arrays.asList(inputs));
+            neuralNetParameters.trainData.outputLabels.addAll(Arrays.asList(outputs));
         }catch (Exception e)
         {
             e.printStackTrace();

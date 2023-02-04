@@ -23,7 +23,7 @@ public class GUI extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage.setTitle("Neural Network App");
+        stage.setTitle("Neural Network App v" + versionNumber);
         Scene scene = new Scene(pane, stageWidth, stageHeight);
         stage.setMinHeight(stageHeight);
         stage.setMinWidth(stageWidth);
