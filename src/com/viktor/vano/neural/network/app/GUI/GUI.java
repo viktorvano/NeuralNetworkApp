@@ -6,10 +6,13 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+
+import java.util.Optional;
 
 import static com.viktor.vano.neural.network.app.AppFunctions.*;
 import static com.viktor.vano.neural.network.app.Variables.*;
@@ -70,5 +73,20 @@ public class GUI extends Application {
         }));
         timeline.setCycleCount(1);
         timeline.play();
+    }
+
+    public static boolean confirmationDialog(@NotNull String title, @NotNull String header, @NotNull String content)
+    {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
