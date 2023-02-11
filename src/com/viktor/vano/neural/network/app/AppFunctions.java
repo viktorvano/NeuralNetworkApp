@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import static com.viktor.vano.neural.network.app.FFNN.FileManagement.readOrCreateFile;
 import static com.viktor.vano.neural.network.app.FFNN.GeneralFunctions.showVectorValues;
+import static com.viktor.vano.neural.network.app.GUI.GUI.confirmationDialog;
 import static com.viktor.vano.neural.network.app.GUI.GUI.customPrompt;
 import static com.viktor.vano.neural.network.app.Variables.*;
 
@@ -191,16 +192,41 @@ public class AppFunctions {
         buttonImagine.setLayoutY(stageHeight*0.15);
         buttonImagine.setDisable(true);
         buttonImagine.setOnAction(event -> {
-            if(neuralNetwork != null)
+            if(neuralNetwork != null
+            && confirmationDialog(
+                    "Imagination",
+                    "This may take a while",
+                    "Are you sure to start imagination with current parameters?"))
             {
+                pane.getChildren().add(progressBarTraining);
                 imagination = new Imagination(0.0f, 1.0f);
                 imagination.start();
+                progressBarTraining.setProgress(neuralNetwork.getImaginationProgress());
             }
         });
         pane.getChildren().add(buttonImagine);
 
+        progressBarTraining = new ProgressBar();
+        progressBarTraining.setPrefWidth(stageWidth*0.8);
+        progressBarTraining.setLayoutX(0.1*stageWidth);
+        progressBarTraining.setLayoutY(0.01*stageHeight);
+
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
             buttonFile.setDisable(neuralNetwork != null && (neuralNetwork.isNetTraining() || update));
+
+            if(neuralNetwork != null)
+                progressBarTraining.setProgress(neuralNetwork.getImaginationProgress());
+
+            if(neuralNetwork != null
+                    && !neuralNetwork.isImaginationRunning()
+                    && neuralNetwork.getImaginationProgress() != 0.0f
+                    && pane.getChildren().contains(progressBarTraining))
+            {
+                pane.getChildren().remove(progressBarTraining);
+                customPrompt("Imagination",
+                        "Imagination finished with " + neuralNetwork.getImaginationProgress()*100.0f + " % matching criteria.",
+                        Alert.AlertType.INFORMATION);
+            }
 
             if(stageReference.getWidth() != stageWidth || stageReference.getHeight() != stageHeight)
             {
@@ -592,6 +618,10 @@ public class AppFunctions {
 
         buttonImagine.setLayoutX(stageWidth*0.85);
         buttonImagine.setLayoutY(stageHeight*0.15);
+
+        progressBarTraining.setPrefWidth(0.8*stageWidth);
+        progressBarTraining.setLayoutX(0.1*stageWidth);
+        progressBarTraining.setLayoutY(0.01*stageHeight);
 
         if(neuralNetParameters != null && filesOK)
         {

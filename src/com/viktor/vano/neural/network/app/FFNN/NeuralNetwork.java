@@ -29,6 +29,8 @@ public class NeuralNetwork {
 
     private float m_loss;
     private float m_recentAverageLoss;
+    private float imaginationProgress;
+    private boolean isImaginationRunning;
 
     public NeuralNetwork(@NotNull NeuralNetParameters neuralNetParameters)
     {
@@ -38,6 +40,8 @@ public class NeuralNetwork {
         this.stopTraining = false;
         this.m_loss = 0;
         this.m_recentAverageLoss = 0;
+        this.imaginationProgress = 0.0f;
+        this.isImaginationRunning = false;
         int numLayers = neuralNetParameters.topology.size();
         System.out.println("Number of layers: " + numLayers);
         this.m_layers = new ArrayList<>();
@@ -58,6 +62,16 @@ public class NeuralNetwork {
         }
         this.loadNeuronWeights();
         netLoading = false;
+    }
+
+    public float getImaginationProgress()
+    {
+        return this.imaginationProgress;
+    }
+
+    public boolean isImaginationRunning()
+    {
+        return this.isImaginationRunning;
     }
 
     public boolean isNetLoading() {
@@ -147,11 +161,13 @@ public class NeuralNetwork {
         if(targetImaginationOutputs.size() != m_layers.get(m_layers.size() - 1).size() - 1)
             throw new Exception();
 
+        this.isImaginationRunning = true;
         final int populationSize = 500;
         final int survivorCount = 50;
         final float exitLoss = 0.01f;
         int generation = 0;
         final int maxGenerations = 3000;
+        this.imaginationProgress = 0.0f;
         ArrayList<Individual> individuals = new ArrayList<>();
         ArrayList<Individual> survivors = new ArrayList<>();
 
@@ -179,13 +195,15 @@ public class NeuralNetwork {
             System.out.println("Lowest loss of generation " + generation + " : " + survivors.get(0).getLoss());
             update = true;
             updateInputSliders = true;
-            if(survivors.get(0).getLoss() < exitLoss)
+            this.imaginationProgress = exitLoss / survivors.get(0).getLoss();
+            if(this.imaginationProgress >= 1.0f)
             {
                 System.out.println("Imagination ended due to low loss with generation: " + generation);
                 break;
             }
         }
 
+        this.isImaginationRunning = false;
         return survivors.get(0).input;//the best of the best
     }
 
