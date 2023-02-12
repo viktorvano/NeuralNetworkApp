@@ -160,6 +160,7 @@ public class AppFunctions {
 
         fileChooser = new FileChooser();
         fileChooser.setTitle("Open Topology File");
+        fileChooser.setInitialDirectory(new File("res"));
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Topology file", "topology*"));
 
