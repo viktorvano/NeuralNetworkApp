@@ -178,6 +178,7 @@ public class AppFunctions {
             {
                 pane.getChildren().add(progressBarTraining);
                 disableActionButtons();
+                disableSlidersAndTextFields();
                 neuralNetwork.trainNeuralNetwork();
                 progressBarTraining.setProgress(neuralNetwork.getTrainingProgress());
             }
@@ -209,6 +210,7 @@ public class AppFunctions {
             {
                 pane.getChildren().add(progressBarTraining);
                 disableActionButtons();
+                disableSlidersAndTextFields();
                 imagination = new Imagination(0.0f, 1.0f);
                 imagination.setName("Imagination Thread " + Math.round(Math.random()*1000.0));
                 imagination.start();
@@ -244,6 +246,7 @@ public class AppFunctions {
             {
                 pane.getChildren().remove(progressBarTraining);
                 enableActionButtons();
+                enableSlidersAndTextFields();
                 customPrompt("Imagination",
                         "Imagination finished with " + neuralNetwork.getImaginationProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
@@ -257,6 +260,7 @@ public class AppFunctions {
             {
                 pane.getChildren().remove(progressBarTraining);
                 enableActionButtons();
+                enableSlidersAndTextFields();
                 customPrompt("Training",
                         "Training finished with " + neuralNetwork.getTrainingProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
@@ -350,6 +354,52 @@ public class AppFunctions {
         buttonTrain.setDisable(false);
         buttonRandomRun.setDisable(false);
         buttonImagine.setDisable(false);
+    }
+
+    private static void disableSlidersAndTextFields()
+    {
+        for (Slider slider : sliderInputs)
+        {
+            slider.setDisable(true);
+        }
+
+        for (TextField textField : textFieldInputs)
+        {
+            textField.setDisable(true);
+        }
+
+        for (Slider slider : sliderOutputs)
+        {
+            slider.setDisable(true);
+        }
+
+        for (TextField textField : textFieldOutputs)
+        {
+            textField.setDisable(true);
+        }
+    }
+
+    private static void enableSlidersAndTextFields()
+    {
+        for (Slider slider : sliderInputs)
+        {
+            slider.setDisable(false);
+        }
+
+        for (TextField textField : textFieldInputs)
+        {
+            textField.setDisable(false);
+        }
+
+        for (Slider slider : sliderOutputs)
+        {
+            slider.setDisable(false);
+        }
+
+        for (TextField textField : textFieldOutputs)
+        {
+            textField.setDisable(false);
+        }
     }
 
     private static void removeOldChildren()
