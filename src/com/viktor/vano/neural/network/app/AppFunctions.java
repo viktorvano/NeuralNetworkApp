@@ -172,6 +172,7 @@ public class AppFunctions {
         buttonTrain.setOnAction(event -> {
             if(neuralNetwork != null)
             {
+                pane.getChildren().add(progressBarTraining);
                 neuralNetwork.trainNeuralNetwork();
                 progressBarTraining.setProgress(neuralNetwork.getTrainingProgress());
             }
@@ -235,6 +236,17 @@ public class AppFunctions {
                 pane.getChildren().remove(progressBarTraining);
                 customPrompt("Imagination",
                         "Imagination finished with " + neuralNetwork.getImaginationProgress()*100.0f + " % matching criteria.",
+                        Alert.AlertType.INFORMATION);
+            }
+
+            if(neuralNetwork != null
+                    && !neuralNetwork.isNetTraining()
+                    && neuralNetwork.getTrainingProgress() != 0.0f
+                    && pane.getChildren().contains(progressBarTraining))
+            {
+                pane.getChildren().remove(progressBarTraining);
+                customPrompt("Training",
+                        "Training finished with " + neuralNetwork.getTrainingProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
             }
 
