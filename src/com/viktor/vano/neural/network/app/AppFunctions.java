@@ -173,6 +173,7 @@ public class AppFunctions {
             if(neuralNetwork != null)
             {
                 neuralNetwork.trainNeuralNetwork();
+                progressBarTraining.setProgress(neuralNetwork.getTrainingProgress());
             }
         });
         pane.getChildren().add(buttonTrain);
@@ -202,6 +203,7 @@ public class AppFunctions {
             {
                 pane.getChildren().add(progressBarTraining);
                 imagination = new Imagination(0.0f, 1.0f);
+                imagination.setName("Imagination Thread " + Math.round(Math.random()*1000.0));
                 imagination.start();
                 progressBarTraining.setProgress(neuralNetwork.getImaginationProgress());
             }
@@ -217,7 +219,13 @@ public class AppFunctions {
             buttonFile.setDisable(neuralNetwork != null && (neuralNetwork.isNetTraining() || update));
 
             if(neuralNetwork != null)
-                progressBarTraining.setProgress(neuralNetwork.getImaginationProgress());
+            {
+                if(neuralNetwork.isImaginationRunning())
+                    progressBarTraining.setProgress(neuralNetwork.getImaginationProgress());
+
+                if(neuralNetwork.isNetTraining())
+                    progressBarTraining.setProgress(neuralNetwork.getTrainingProgress());
+            }
 
             if(neuralNetwork != null
                     && !neuralNetwork.isImaginationRunning()

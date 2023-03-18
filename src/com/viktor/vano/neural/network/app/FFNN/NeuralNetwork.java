@@ -31,6 +31,7 @@ public class NeuralNetwork {
     private float m_recentAverageLoss;
     private float imaginationProgress;
     private boolean isImaginationRunning;
+    private float trainingProgress;
 
     public NeuralNetwork(@NotNull NeuralNetParameters neuralNetParameters)
     {
@@ -41,6 +42,7 @@ public class NeuralNetwork {
         this.m_loss = 0;
         this.m_recentAverageLoss = 0;
         this.imaginationProgress = 0.0f;
+        this.trainingProgress = 0.0f;
         this.isImaginationRunning = false;
         int numLayers = neuralNetParameters.topology.size();
         System.out.println("Number of layers: " + numLayers);
@@ -69,6 +71,11 @@ public class NeuralNetwork {
         return this.imaginationProgress;
     }
 
+    public float getTrainingProgress()
+    {
+        return this.trainingProgress;
+    }
+
     public boolean isImaginationRunning()
     {
         return this.isImaginationRunning;
@@ -89,6 +96,7 @@ public class NeuralNetwork {
     {
         this.netTraining = true;
         this.trainingThread = new TrainingThread(this);
+        this.trainingThread.setName("Training Thread " + Math.round(Math.random()*1000.0));
         this.trainingThread.start();
     }
 
@@ -460,6 +468,7 @@ public class NeuralNetwork {
         private TrainingThread(NeuralNetwork net){
             this.myNet = net;
             this.netObjects = net.neuralNetParameters;
+            trainingProgress = 0.0f;
         }
 
         @Override
@@ -474,6 +483,7 @@ public class NeuralNetwork {
             netObjects.target.clear();
             netObjects.result.clear();
             neuralNetParameters.trainingPass = 0;
+            trainingProgress = 0.0f;
 
             loadTrainingDataFromFile(neuralNetParameters);
 
@@ -518,6 +528,8 @@ public class NeuralNetwork {
                     this.netObjects.momentum = this.netObjects.averageLoss;
                 System.out.println("Net average loss: " + this.netObjects.averageLoss + "\n\n");
                 repeatTrainingCycle = currentTrainingLoss > this.netObjects.averageLoss;
+
+                trainingProgress = netObjects.trainingExitLoss / this.netObjects.averageLoss;
 
                 if(this.netObjects.averageLoss < netObjects.trainingExitLoss
                   && netObjects.trainingPass > netObjects.minTrainingPasses)
