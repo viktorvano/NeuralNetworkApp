@@ -71,9 +71,19 @@ public class NeuralNetwork {
         return this.imaginationProgress;
     }
 
+    public void resetImaginationProgress()
+    {
+        this.imaginationProgress = 0.0f;
+    }
+
     public float getTrainingProgress()
     {
         return this.trainingProgress;
+    }
+
+    public void resetTrainingProgress()
+    {
+        this.trainingProgress = 0.0f;
     }
 
     public boolean isImaginationRunning()

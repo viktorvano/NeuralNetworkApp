@@ -227,7 +227,10 @@ public class AppFunctions {
         progressBarTraining.setLayoutY(0.01*stageHeight);
 
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
-            buttonFile.setDisable(neuralNetwork != null && (neuralNetwork.isNetTraining() || update));
+            buttonFile.setDisable(neuralNetwork != null
+                    && (neuralNetwork.isNetTraining() 
+                        || update
+                        || neuralNetwork.isNetTraining()));
 
             if(neuralNetwork != null)
             {
@@ -250,6 +253,7 @@ public class AppFunctions {
                 customPrompt("Imagination",
                         "Imagination finished with " + neuralNetwork.getImaginationProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
+                neuralNetwork.resetImaginationProgress();
             }
 
             if(neuralNetwork != null
@@ -264,6 +268,7 @@ public class AppFunctions {
                 customPrompt("Training",
                         "Training finished with " + neuralNetwork.getTrainingProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
+                neuralNetwork.resetTrainingProgress();
             }
 
             if(stageReference.getWidth() != stageWidth || stageReference.getHeight() != stageHeight)
