@@ -32,6 +32,7 @@ public class AppFunctions {
         buttonFile.setLayoutY(stageHeight*0.05);
         buttonFile.setOnAction(event -> {
             topologyFile = fileChooser.showOpenDialog(stageReference);
+            fileChooser.setInitialDirectory(new File("res/"));
             if (topologyFile != null) {
                 filesOK = true;
                 System.out.println("File: " + topologyFile.getPath());
