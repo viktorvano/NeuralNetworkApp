@@ -173,6 +173,9 @@ public class AppFunctions {
             if(neuralNetwork != null)
             {
                 pane.getChildren().add(progressBarTraining);
+                buttonTrain.setDisable(true);
+                buttonRandomRun.setDisable(true);
+                buttonImagine.setDisable(true);
                 neuralNetwork.trainNeuralNetwork();
                 progressBarTraining.setProgress(neuralNetwork.getTrainingProgress());
             }
@@ -245,6 +248,9 @@ public class AppFunctions {
                     && pane.getChildren().contains(progressBarTraining))
             {
                 pane.getChildren().remove(progressBarTraining);
+                buttonTrain.setDisable(false);
+                buttonRandomRun.setDisable(false);
+                buttonImagine.setDisable(false);
                 customPrompt("Training",
                         "Training finished with " + neuralNetwork.getTrainingProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
