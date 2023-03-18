@@ -32,6 +32,7 @@ public class AppFunctions {
         buttonFile.setLayoutY(stageHeight*0.05);
         buttonFile.setOnAction(event -> {
             topologyFile = fileChooser.showOpenDialog(stageReference);
+            fileChooser.setInitialDirectory(new File("res/"));
             if (topologyFile != null) {
                 filesOK = true;
                 System.out.println("File: " + topologyFile.getPath());
@@ -169,9 +170,17 @@ public class AppFunctions {
         buttonTrain.setLayoutY(stageHeight*0.05);
         buttonTrain.setDisable(true);
         buttonTrain.setOnAction(event -> {
-            if(neuralNetwork != null)
+            if(neuralNetwork != null
+            && confirmationDialog(
+                    "Training",
+                    "This may take a while",
+                    "Are you sure to start training?"))
             {
+                pane.getChildren().add(progressBarTraining);
+                disableActionButtons();
+                disableSlidersAndTextFields();
                 neuralNetwork.trainNeuralNetwork();
+                progressBarTraining.setProgress(neuralNetwork.getTrainingProgress());
             }
         });
         pane.getChildren().add(buttonTrain);
@@ -200,7 +209,10 @@ public class AppFunctions {
                     "Are you sure to start imagination with current parameters?"))
             {
                 pane.getChildren().add(progressBarTraining);
+                disableActionButtons();
+                disableSlidersAndTextFields();
                 imagination = new Imagination(0.0f, 1.0f);
+                imagination.setName("Imagination Thread " + Math.round(Math.random()*1000.0));
                 imagination.start();
                 progressBarTraining.setProgress(neuralNetwork.getImaginationProgress());
             }
@@ -213,10 +225,19 @@ public class AppFunctions {
         progressBarTraining.setLayoutY(0.01*stageHeight);
 
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
-            buttonFile.setDisable(neuralNetwork != null && (neuralNetwork.isNetTraining() || update));
+            buttonFile.setDisable(neuralNetwork != null
+                    && (neuralNetwork.isNetTraining()
+                        || update
+                        || neuralNetwork.isNetTraining()));
 
             if(neuralNetwork != null)
-                progressBarTraining.setProgress(neuralNetwork.getImaginationProgress());
+            {
+                if(neuralNetwork.isImaginationRunning())
+                    progressBarTraining.setProgress(neuralNetwork.getImaginationProgress());
+
+                if(neuralNetwork.isNetTraining())
+                    progressBarTraining.setProgress(neuralNetwork.getTrainingProgress());
+            }
 
             if(neuralNetwork != null
                     && !neuralNetwork.isImaginationRunning()
@@ -224,9 +245,26 @@ public class AppFunctions {
                     && pane.getChildren().contains(progressBarTraining))
             {
                 pane.getChildren().remove(progressBarTraining);
+                enableActionButtons();
+                enableSlidersAndTextFields();
                 customPrompt("Imagination",
                         "Imagination finished with " + neuralNetwork.getImaginationProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
+                neuralNetwork.resetImaginationProgress();
+            }
+
+            if(neuralNetwork != null
+                    && !neuralNetwork.isNetTraining()
+                    && neuralNetwork.getTrainingProgress() != 0.0f
+                    && pane.getChildren().contains(progressBarTraining))
+            {
+                pane.getChildren().remove(progressBarTraining);
+                enableActionButtons();
+                enableSlidersAndTextFields();
+                customPrompt("Training",
+                        "Training finished with " + neuralNetwork.getTrainingProgress()*100.0f + " % matching criteria.",
+                        Alert.AlertType.INFORMATION);
+                neuralNetwork.resetTrainingProgress();
             }
 
             if(stageReference.getWidth() != stageWidth || stageReference.getHeight() != stageHeight)
@@ -316,6 +354,52 @@ public class AppFunctions {
         buttonTrain.setDisable(false);
         buttonRandomRun.setDisable(false);
         buttonImagine.setDisable(false);
+    }
+
+    private static void disableSlidersAndTextFields()
+    {
+        for (Slider slider : sliderInputs)
+        {
+            slider.setDisable(true);
+        }
+
+        for (TextField textField : textFieldInputs)
+        {
+            textField.setDisable(true);
+        }
+
+        for (Slider slider : sliderOutputs)
+        {
+            slider.setDisable(true);
+        }
+
+        for (TextField textField : textFieldOutputs)
+        {
+            textField.setDisable(true);
+        }
+    }
+
+    private static void enableSlidersAndTextFields()
+    {
+        for (Slider slider : sliderInputs)
+        {
+            slider.setDisable(false);
+        }
+
+        for (TextField textField : textFieldInputs)
+        {
+            textField.setDisable(false);
+        }
+
+        for (Slider slider : sliderOutputs)
+        {
+            slider.setDisable(false);
+        }
+
+        for (TextField textField : textFieldOutputs)
+        {
+            textField.setDisable(false);
+        }
     }
 
     private static void removeOldChildren()

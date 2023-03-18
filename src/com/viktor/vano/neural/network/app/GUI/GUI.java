@@ -54,6 +54,8 @@ public class GUI extends Application {
     public void stop() throws Exception {
         super.stop();
         imagination.stop();
+        if(neuralNetwork != null && neuralNetwork.isNetTraining())
+            neuralNetwork.stopTraining();
     }
 
     public static void customPrompt(@NotNull String title, @NotNull String message, @NotNull Alert.AlertType alertType)
