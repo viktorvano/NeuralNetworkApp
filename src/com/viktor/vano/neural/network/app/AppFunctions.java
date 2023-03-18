@@ -177,9 +177,7 @@ public class AppFunctions {
                     "Are you sure to start training?"))
             {
                 pane.getChildren().add(progressBarTraining);
-                buttonTrain.setDisable(true);
-                buttonRandomRun.setDisable(true);
-                buttonImagine.setDisable(true);
+                disableActionButtons();
                 neuralNetwork.trainNeuralNetwork();
                 progressBarTraining.setProgress(neuralNetwork.getTrainingProgress());
             }
@@ -210,9 +208,7 @@ public class AppFunctions {
                     "Are you sure to start imagination with current parameters?"))
             {
                 pane.getChildren().add(progressBarTraining);
-                buttonTrain.setDisable(true);
-                buttonRandomRun.setDisable(true);
-                buttonImagine.setDisable(true);
+                disableActionButtons();
                 imagination = new Imagination(0.0f, 1.0f);
                 imagination.setName("Imagination Thread " + Math.round(Math.random()*1000.0));
                 imagination.start();
@@ -228,7 +224,7 @@ public class AppFunctions {
 
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
             buttonFile.setDisable(neuralNetwork != null
-                    && (neuralNetwork.isNetTraining() 
+                    && (neuralNetwork.isNetTraining()
                         || update
                         || neuralNetwork.isNetTraining()));
 
@@ -247,9 +243,7 @@ public class AppFunctions {
                     && pane.getChildren().contains(progressBarTraining))
             {
                 pane.getChildren().remove(progressBarTraining);
-                buttonTrain.setDisable(false);
-                buttonRandomRun.setDisable(false);
-                buttonImagine.setDisable(false);
+                enableActionButtons();
                 customPrompt("Imagination",
                         "Imagination finished with " + neuralNetwork.getImaginationProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
@@ -262,9 +256,7 @@ public class AppFunctions {
                     && pane.getChildren().contains(progressBarTraining))
             {
                 pane.getChildren().remove(progressBarTraining);
-                buttonTrain.setDisable(false);
-                buttonRandomRun.setDisable(false);
-                buttonImagine.setDisable(false);
+                enableActionButtons();
                 customPrompt("Training",
                         "Training finished with " + neuralNetwork.getTrainingProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
