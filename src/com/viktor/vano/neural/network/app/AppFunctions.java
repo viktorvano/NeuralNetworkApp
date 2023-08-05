@@ -275,17 +275,17 @@ public class AppFunctions {
                 System.out.println("Updated layout from timeline.");
             }
 
-            if(update && buttonNeurons != null)
+            if(update /*&& buttonNeurons != null*/)
             {
                 update = false;
-                for (int i = 0; i < buttonNeurons.size(); i++)
+                /*for (int i = 0; i < buttonNeurons.size(); i++)
                 {
                     for(int l = 0; l < buttonNeurons.get(i).size(); l++)
                     {
                         buttonNeurons.get(i).get(l).setText(formatFloatToString4(neuralNetwork.getNeuronOutput(i,l)));
                         buttonNeurons.get(i).get(l).setStyle(colorStyle(neuralNetwork.getNeuronOutput(i,l)));
                     }
-                }
+                }*/
             }
 
             if(updateInputSliders &&
@@ -294,7 +294,7 @@ public class AppFunctions {
                 updateInputSliders = false;
                 for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
                 {
-                    sliderInputs.get(l).setValue(neuralNetwork.neuralNetParameters.input.get(l));
+                    //sliderInputs.get(l).setValue(neuralNetwork.neuralNetParameters.input.get(l));
                 }
             }
         }));
@@ -321,12 +321,12 @@ public class AppFunctions {
             inStrings = strings[0].split("\t");
             outStrings = strings[1].split("\t");
 
-            if(inputLabels == null)
+            /*if(inputLabels == null)
                 inputLabels = new ArrayList<>();
             else
                 inputLabels.clear();
 
-            inputLabels.addAll(Arrays.asList(inStrings));
+            inputLabels.addAll(Arrays.asList(inStrings));*/
 
             if(outputLabels == null)
                 outputLabels = new ArrayList<>();
@@ -358,7 +358,7 @@ public class AppFunctions {
 
     private static void disableSlidersAndTextFields()
     {
-        for (Slider slider : sliderInputs)
+        /*for (Slider slider : sliderInputs)
         {
             slider.setDisable(true);
         }
@@ -366,7 +366,7 @@ public class AppFunctions {
         for (TextField textField : textFieldInputs)
         {
             textField.setDisable(true);
-        }
+        }*/
 
         for (Slider slider : sliderOutputs)
         {
@@ -381,7 +381,7 @@ public class AppFunctions {
 
     private static void enableSlidersAndTextFields()
     {
-        for (Slider slider : sliderInputs)
+        /*for (Slider slider : sliderInputs)
         {
             slider.setDisable(false);
         }
@@ -389,7 +389,7 @@ public class AppFunctions {
         for (TextField textField : textFieldInputs)
         {
             textField.setDisable(false);
-        }
+        }*/
 
         for (Slider slider : sliderOutputs)
         {
@@ -407,7 +407,7 @@ public class AppFunctions {
         if(neuralNetwork != null && neuralNetwork.isNetTraining())
             neuralNetwork.stopTraining();
 
-        for (ArrayList<Button> setOfNeuronButtons : buttonNeurons)
+        /*for (ArrayList<Button> setOfNeuronButtons : buttonNeurons)
         {
             for (Button buttonNeuron : setOfNeuronButtons)
             {
@@ -417,11 +417,11 @@ public class AppFunctions {
         }
         buttonNeurons.clear();
 
-        buttonNeurons = null;
+        buttonNeurons = null;*/
         neuralNetwork = null;
         neuralNetParameters = null;
 
-        for(Label in : labelInputs)
+        /*for(Label in : labelInputs)
         {
             pane.getChildren().remove(in);
         }
@@ -437,7 +437,7 @@ public class AppFunctions {
         {
             pane.getChildren().remove(textField);
         }
-        textFieldInputs.clear();
+        textFieldInputs.clear();*/
 
         for(Label out : labelOutputs)
         {
@@ -468,7 +468,7 @@ public class AppFunctions {
 
     private static void createNewNeuralButtons()
     {
-        buttonNeurons = new ArrayList<>();
+        /*buttonNeurons = new ArrayList<>();
         for (int i = 0; i < neuralNetParameters.topology.size(); i++)
         {
             buttonNeurons.add(new ArrayList<>());
@@ -484,7 +484,7 @@ public class AppFunctions {
                         ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - bottomOffset);
                 pane.getChildren().add(buttonNeurons.get(i).get(l));
             }
-        }
+        }*/
     }
 
     private static void createNewSlidersAndTextFields()
@@ -492,15 +492,15 @@ public class AppFunctions {
         neuralNetwork.neuralNetParameters.input.clear();
         neuralNetwork.neuralNetParameters.target.clear();
         neuralNetwork.neuralNetParameters.result.clear();
-        labelInputs = new ArrayList<>();
+        //labelInputs = new ArrayList<>();
         labelOutputs = new ArrayList<>();
-        sliderInputs = new ArrayList<>();
+        //sliderInputs = new ArrayList<>();
         sliderOutputs = new ArrayList<>();
-        textFieldInputs = new ArrayList<>();
+        //textFieldInputs = new ArrayList<>();
         textFieldOutputs = new ArrayList<>();
         for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
         {
-            try
+            /*try
             {
                 labelInputs.add(new Label(inputLabels.get(l)));
                 labelInputs.get(l).setLayoutX(0.06*stageWidth);
@@ -560,7 +560,7 @@ public class AppFunctions {
                         textFieldInputs.get(finalL).setText("");
                     }
                 }
-            });
+            });*/
         }
 
         for(int l = 0; l < neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1); l++)
@@ -710,7 +710,7 @@ public class AppFunctions {
 
         if(neuralNetParameters != null && filesOK)
         {
-            for (int i = 0; i < neuralNetParameters.topology.size(); i++)
+            /*for (int i = 0; i < neuralNetParameters.topology.size(); i++)
             {
                 for(int l = 0; l < neuralNetParameters.topology.get(i); l++)
                 {
@@ -720,9 +720,9 @@ public class AppFunctions {
                             (0.75*stageHeight / ((float)neuralNetParameters.topology.get(i))) * l +
                             ((stageHeight / ((float)neuralNetParameters.topology.get(i))) / 2) - bottomOffset);
                 }
-            }
+            }*/
 
-            for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
+            /*for(int l = 0; l < neuralNetParameters.topology.get(0); l++)
             {
                 labelInputs.get(l).setLayoutX(0.06*stageWidth);
                 labelInputs.get(l).setLayoutY(0.2325*stageHeight +
@@ -738,7 +738,7 @@ public class AppFunctions {
                 textFieldInputs.get(l).setLayoutY(0.27*stageHeight +
                         (0.75*stageHeight / ((float)neuralNetParameters.topology.get(0))) * l +
                         ((stageHeight / ((float)neuralNetParameters.topology.get(0))) / 2) - bottomOffset);
-            }
+            }*/
 
             for(int l = 0; l < neuralNetParameters.topology.get(neuralNetParameters.topology.size()-1); l++)
             {
@@ -771,8 +771,8 @@ public class AppFunctions {
         {
             float randomValue = (float)Math.random();
             neuralNetwork.neuralNetParameters.input.add(randomValue);
-            sliderInputs.get(i).setValue(randomValue);
-            textFieldInputs.get(i).setText(String.valueOf(randomValue));
+            //sliderInputs.get(i).setValue(randomValue);
+            //textFieldInputs.get(i).setText(String.valueOf(randomValue));
         }
         showVectorValues("Inputs:", neuralNetwork.neuralNetParameters.input);
         neuralNetwork.feedForward(neuralNetwork.neuralNetParameters.input);

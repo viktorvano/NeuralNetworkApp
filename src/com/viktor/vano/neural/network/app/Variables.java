@@ -25,11 +25,11 @@ public class Variables {
     public static boolean filesOK = true;
     public static NeuralNetParameters neuralNetParameters;
     public static NeuralNetwork neuralNetwork;
-    public static ArrayList<ArrayList<Button>> buttonNeurons;
-    public static ArrayList<Slider> sliderInputs, sliderOutputs;
-    public static ArrayList<TextField> textFieldInputs, textFieldOutputs;
-    public static ArrayList<String> inputLabels, outputLabels;
-    public static ArrayList<Label> labelInputs, labelOutputs;
+    //public static ArrayList<ArrayList<Button>> buttonNeurons;
+    public static ArrayList<Slider> /*sliderInputs, */sliderOutputs;
+    public static ArrayList<TextField> /*textFieldInputs, */textFieldOutputs;
+    public static ArrayList<String> /*inputLabels, */outputLabels;
+    public static ArrayList<Label> /*labelInputs, */labelOutputs;
     public static boolean update = false, updateInputSliders = false;
 
     public static AppFunctions.Imagination imagination = new AppFunctions.Imagination(0.0f, 1.0f);
