@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Variables {
-    public static final int versionNumber = 20230318;
+    public static final int versionNumber = 20230806;
     public static int stageHeight = 600;
     public static int stageWidth = 800;
     public static final int bottomOffset = 80;
@@ -31,6 +31,6 @@ public class Variables {
     public static ArrayList<String> inputLabels, outputLabels;
     public static ArrayList<Label> labelInputs, labelOutputs;
     public static boolean update = false, updateInputSliders = false;
-
+    public static CheckBox checkBoxRange, checkBoxChart, checkBoxCSV;
     public static AppFunctions.Imagination imagination = new AppFunctions.Imagination(0.0f, 1.0f);
 }

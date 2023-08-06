@@ -165,6 +165,21 @@ public class AppFunctions {
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Topology file", "topology*"));
 
+        checkBoxRange = new CheckBox("☐ 0..1 / ☑ -1..1");
+        checkBoxRange.setLayoutX(stageWidth*0.65);
+        checkBoxRange.setLayoutY(stageHeight*0.05);
+        pane.getChildren().add(checkBoxRange);
+
+        checkBoxChart = new CheckBox("Imagination Chart");
+        checkBoxChart.setLayoutX(stageWidth*0.65);
+        checkBoxChart.setLayoutY(stageHeight*0.10);
+        pane.getChildren().add(checkBoxChart);
+
+        checkBoxCSV = new CheckBox("Imagination CSV");
+        checkBoxCSV.setLayoutX(stageWidth*0.65);
+        checkBoxCSV.setLayoutY(stageHeight*0.15);
+        pane.getChildren().add(checkBoxCSV);
+
         buttonTrain = new Button("Train");
         buttonTrain.setLayoutX(stageWidth*0.85);
         buttonTrain.setLayoutY(stageHeight*0.05);
@@ -227,8 +242,7 @@ public class AppFunctions {
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
             buttonFile.setDisable(neuralNetwork != null
                     && (neuralNetwork.isNetTraining()
-                        || update
-                        || neuralNetwork.isNetTraining()));
+                        || update));
 
             if(neuralNetwork != null)
             {
@@ -694,6 +708,15 @@ public class AppFunctions {
 
         labelWeightsFile.setLayoutX(stageWidth*0.12);
         labelWeightsFile.setLayoutY(stageHeight*0.14);
+
+        checkBoxRange.setLayoutX(stageWidth*0.65);
+        checkBoxRange.setLayoutY(stageHeight*0.05);
+
+        checkBoxChart.setLayoutX(stageWidth*0.65);
+        checkBoxChart.setLayoutY(stageHeight*0.10);
+
+        checkBoxCSV.setLayoutX(stageWidth*0.65);
+        checkBoxCSV.setLayoutY(stageHeight*0.15);
 
         buttonTrain.setLayoutX(stageWidth*0.85);
         buttonTrain.setLayoutY(stageHeight*0.05);
