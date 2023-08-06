@@ -3,8 +3,10 @@ package com.viktor.vano.neural.network.app;
 import com.sun.istack.internal.NotNull;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetParameters;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetwork;
+import com.viktor.vano.neural.network.app.GUI.NeuralCharts;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -226,7 +228,13 @@ public class AppFunctions {
                 pane.getChildren().add(progressBarTraining);
                 disableActionButtons();
                 disableSlidersAndTextFields();
-                imagination = new Imagination(0.0f, 1.0f);
+                if(checkBoxRange.isSelected())
+                {
+                    imagination = new Imagination(-1.0f, 1.0f);
+                }else
+                {
+                    imagination = new Imagination(0.0f, 1.0f);
+                }
                 imagination.setName("Imagination Thread " + Math.round(Math.random()*1000.0));
                 imagination.start();
                 progressBarTraining.setProgress(neuralNetwork.getImaginationProgress());
@@ -358,6 +366,9 @@ public class AppFunctions {
 
     private static void disableActionButtons()
     {
+        checkBoxChart.setDisable(true);
+        checkBoxRange.setDisable(true);
+        checkBoxCSV.setDisable(true);
         buttonTrain.setDisable(true);
         buttonRandomRun.setDisable(true);
         buttonImagine.setDisable(true);
@@ -365,6 +376,9 @@ public class AppFunctions {
 
     private static void enableActionButtons()
     {
+        checkBoxChart.setDisable(false);
+        checkBoxRange.setDisable(false);
+        checkBoxCSV.setDisable(false);
         buttonTrain.setDisable(false);
         buttonRandomRun.setDisable(false);
         buttonImagine.setDisable(false);
@@ -877,7 +891,32 @@ public class AppFunctions {
             update = true;
             updateInputSliders = true;
             enableActionButtons();
+
+            if(checkBoxChart.isSelected())
+            {
+                ArrayList<XYChart.Series<Number, Number>> neuralChartSeries = new ArrayList<>();
+                int maximumIndex = findMaximumValueIndex(neuralNetwork.neuralNetParameters.result);
+                DecimalFormat df = new DecimalFormat("##.##");
+                String chartClassifierMatch = df.format(neuralNetwork.neuralNetParameters.result.get(maximumIndex) * 100.0) + "%";
+                new NeuralCharts(stageReference, neuralChartSeries, labelOutputs, "Imagination result", chartClassifierMatch);
+            }
+
+            if(checkBoxCSV.isSelected())
+            {
+                //TODO: save CSV file
+            }
         }
+    }
+
+    public static int findMaximumValueIndex(ArrayList<Float> values)
+    {
+        int maximumIndex = 0;
+        for(int i=0; i<values.size(); i++)
+        {
+            if(values.get(i) > values.get(maximumIndex))
+                maximumIndex = i;
+        }
+        return maximumIndex;
     }
 
     public static void createDirectoryIfNotExist(String directoryName)
