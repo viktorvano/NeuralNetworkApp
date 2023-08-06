@@ -13,10 +13,14 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Locale;
 
 import static com.viktor.vano.neural.network.app.FFNN.FileManagement.readOrCreateFile;
@@ -298,7 +302,9 @@ public class AppFunctions {
 
                 if(checkBoxCSV.isSelected())
                 {
-                    //TODO: save CSV file
+                    SaveCSV saveCSV = new SaveCSV();
+                    saveCSV.setName("Save CSV " + Math.round(Math.random()*1000.0f));
+                    saveCSV.start();
                 }
 
                 customPrompt("Imagination",
@@ -355,6 +361,73 @@ public class AppFunctions {
         timelineRefresh.setCycleCount(Timeline.INDEFINITE);
         timelineRefresh.play();
     }
+
+    public static String generateFilename(String name) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String dateAndTime = dateFormat.format(new Date());
+        return name + "_" + dateAndTime + ".csv";
+    }
+
+    public static class SaveCSV extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            String[] strings = labelTopologyFile.getText().split("topology_");
+            String filename = generateFilename(strings[1].replace(".txt", ""));
+            File fileOut = new File(filename);
+            try {
+                fileOut.createNewFile();
+                FileWriter writer = new FileWriter(fileOut, true);
+                writer.append("IN;OUT\n");
+
+                int maxLines = 0;
+                if(neuralNetwork.neuralNetParameters.inputNodes >
+                        neuralNetwork.neuralNetParameters.outputNodes)
+                {
+                    maxLines = neuralNetwork.neuralNetParameters.inputNodes;
+                }else
+                {
+                    maxLines = neuralNetwork.neuralNetParameters.outputNodes;
+                }
+
+                for(int i=0; i<maxLines; i++)
+                {
+                    boolean hasIn = false;
+                    boolean hasOut = false;
+                    float inValue = -99f;
+                    float outValue = -99f;
+                    if(i < neuralNetwork.neuralNetParameters.inputNodes)
+                    {
+                        inValue = neuralNetwork.neuralNetParameters.input.get(i);
+                        hasIn = true;
+                    }
+
+                    if(i < neuralNetwork.neuralNetParameters.outputNodes)
+                    {
+                        outValue = neuralNetwork.neuralNetParameters.result.get(i);
+                        hasOut = true;
+                    }
+
+                    if(hasIn && hasOut)
+                    {
+                        writer.append(inValue + ";" + outValue + "\n");
+                    }else if(hasIn && !hasOut)
+                    {
+                        writer.append(inValue + ";\n");
+                    }else if(!hasIn && hasOut)
+                    {
+                        writer.append(";" + outValue + "\n");
+                    }
+                }
+
+                writer.close();
+            } catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 
     private static void loadLabels(@NotNull String trainingFilePath)
     {
