@@ -269,6 +269,38 @@ public class AppFunctions {
                 pane.getChildren().remove(progressBarTraining);
                 enableActionButtons();
                 enableSlidersAndTextFields();
+
+                if(checkBoxChart.isSelected())
+                {
+                    ArrayList<XYChart.Series<Number, Number>> neuralChartSeries = new ArrayList<>();
+                    neuralChartSeries.add(new XYChart.Series<>());
+                    if(neuralNetwork.neuralNetParameters.topology.get(0) < 2000)
+                    {
+                        for (int neuron = 0; neuron < neuralNetwork.neuralNetParameters.topology.get(0); neuron++)
+                            neuralChartSeries.get(0).getData().add(new XYChart.Data<>(neuron + 1, neuralNetwork.getNeuronOutput(0, neuron)));
+                    }else
+                    {
+                        int step = neuralNetwork.neuralNetParameters.topology.get(0) % 2000;
+                        for (int neuron = 0; neuron < neuralNetwork.neuralNetParameters.topology.get(0); neuron+=step)
+                            neuralChartSeries.get(0).getData().add(new XYChart.Data<>(neuron + 1, neuralNetwork.getNeuronOutput(0, neuron)));
+                    }
+
+                    for (int layer = 1; layer < neuralNetwork.neuralNetParameters.topology.size(); layer++) {
+                        neuralChartSeries.add(new XYChart.Series<>());
+                        for (int neuron = 0; neuron < neuralNetwork.neuralNetParameters.topology.get(layer); neuron++)
+                            neuralChartSeries.get(layer).getData().add(new XYChart.Data<>(neuron + 1, neuralNetwork.getNeuronOutput(layer, neuron)));
+                    }
+                    int maximumIndex = findMaximumValueIndex(neuralNetwork.neuralNetParameters.result);
+                    DecimalFormat df = new DecimalFormat("##.##");
+                    String chartClassifierMatch = df.format(neuralNetwork.neuralNetParameters.result.get(maximumIndex) * 100.0) + "%";
+                    new NeuralCharts(stageReference, neuralChartSeries, labelOutputs, "Imagination result", chartClassifierMatch);
+                }
+
+                if(checkBoxCSV.isSelected())
+                {
+                    //TODO: save CSV file
+                }
+
                 customPrompt("Imagination",
                         "Imagination finished with " + neuralNetwork.getImaginationProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
@@ -891,20 +923,6 @@ public class AppFunctions {
             update = true;
             updateInputSliders = true;
             enableActionButtons();
-
-            if(checkBoxChart.isSelected())
-            {
-                ArrayList<XYChart.Series<Number, Number>> neuralChartSeries = new ArrayList<>();
-                int maximumIndex = findMaximumValueIndex(neuralNetwork.neuralNetParameters.result);
-                DecimalFormat df = new DecimalFormat("##.##");
-                String chartClassifierMatch = df.format(neuralNetwork.neuralNetParameters.result.get(maximumIndex) * 100.0) + "%";
-                new NeuralCharts(stageReference, neuralChartSeries, labelOutputs, "Imagination result", chartClassifierMatch);
-            }
-
-            if(checkBoxCSV.isSelected())
-            {
-                //TODO: save CSV file
-            }
         }
     }
 

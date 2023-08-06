@@ -98,11 +98,14 @@ public class NeuralCharts {
         CategoryAxis xAxisOutputLayer = new CategoryAxis();
         for(int i=0; i<neuralSeries.get(neuralSeries.size()-1).getData().size(); i++)
         {
+            Label label = classifier.get(i);
+            String labelText = label.getText();
+
             if(classifier.get(i).equals(""))
                 outputSeries.getData().add(new XYChart.Data("[no name]",
                         neuralSeries.get(neuralSeries.size()-1).getData().get(i).getYValue()));
             else
-                outputSeries.getData().add(new XYChart.Data(classifier.get(i),
+                outputSeries.getData().add(new XYChart.Data(labelText,
                         neuralSeries.get(neuralSeries.size()-1).getData().get(i).getYValue()));
         }
         yAxis = new NumberAxis();
