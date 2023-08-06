@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Variables {
-    public static final int versionNumber = 20230805;
+    public static final int versionNumber = 20230806;
     public static int stageHeight = 600;
     public static int stageWidth = 800;
     public static final int bottomOffset = 80;
@@ -25,12 +25,12 @@ public class Variables {
     public static boolean filesOK = true;
     public static NeuralNetParameters neuralNetParameters;
     public static NeuralNetwork neuralNetwork;
-    //public static ArrayList<ArrayList<Button>> buttonNeurons;
-    public static ArrayList<Slider> /*sliderInputs, */sliderOutputs;
-    public static ArrayList<TextField> /*textFieldInputs, */textFieldOutputs;
-    public static ArrayList<String> /*inputLabels, */outputLabels;
-    public static ArrayList<Label> /*labelInputs, */labelOutputs;
+    public static ArrayList<ArrayList<Button>> buttonNeurons;
+    public static ArrayList<Slider> sliderInputs, sliderOutputs;
+    public static ArrayList<TextField> textFieldInputs, textFieldOutputs;
+    public static ArrayList<String> inputLabels, outputLabels;
+    public static ArrayList<Label> labelInputs, labelOutputs;
     public static boolean update = false, updateInputSliders = false;
-
+    public static CheckBox checkBoxRange, checkBoxChart, checkBoxCSV;
     public static AppFunctions.Imagination imagination = new AppFunctions.Imagination(0.0f, 1.0f);
 }
