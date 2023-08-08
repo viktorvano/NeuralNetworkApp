@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Variables {
-    public static final int versionNumber = 20230806;
+    public static final int versionNumber = 20230808;
     public static int stageHeight = 600;
     public static int stageWidth = 800;
     public static final int bottomOffset = 80;
