@@ -511,7 +511,7 @@ public class NeuralNetwork {
                 //Get new input data and feed it forward:
                 if(!repeatTrainingCycle)
                     netObjects.trainData.getNextInputs(netObjects);
-                //showVectorValues("Inputs:", netObjects.input);
+                showVectorValues("Inputs:", netObjects.input);
                 myNet.feedForward(netObjects.input);
 
                 // Train the net what the outputs should have been:
