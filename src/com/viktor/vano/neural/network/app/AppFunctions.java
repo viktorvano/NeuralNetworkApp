@@ -3,18 +3,24 @@ package com.viktor.vano.neural.network.app;
 import com.sun.istack.internal.NotNull;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetParameters;
 import com.viktor.vano.neural.network.app.FFNN.NeuralNetwork;
+import com.viktor.vano.neural.network.app.GUI.NeuralCharts;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Locale;
 
 import static com.viktor.vano.neural.network.app.FFNN.FileManagement.readOrCreateFile;
@@ -165,6 +171,21 @@ public class AppFunctions {
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Topology file", "topology*"));
 
+        checkBoxRange = new CheckBox("☐ 0..1 / ☑ -1..1");
+        checkBoxRange.setLayoutX(stageWidth*0.65);
+        checkBoxRange.setLayoutY(stageHeight*0.05);
+        pane.getChildren().add(checkBoxRange);
+
+        checkBoxChart = new CheckBox("Imagination Chart");
+        checkBoxChart.setLayoutX(stageWidth*0.65);
+        checkBoxChart.setLayoutY(stageHeight*0.10);
+        pane.getChildren().add(checkBoxChart);
+
+        checkBoxCSV = new CheckBox("Imagination CSV");
+        checkBoxCSV.setLayoutX(stageWidth*0.65);
+        checkBoxCSV.setLayoutY(stageHeight*0.15);
+        pane.getChildren().add(checkBoxCSV);
+
         buttonTrain = new Button("Train");
         buttonTrain.setLayoutX(stageWidth*0.85);
         buttonTrain.setLayoutY(stageHeight*0.05);
@@ -211,7 +232,13 @@ public class AppFunctions {
                 pane.getChildren().add(progressBarTraining);
                 disableActionButtons();
                 disableSlidersAndTextFields();
-                imagination = new Imagination(0.0f, 1.0f);
+                if(checkBoxRange.isSelected())
+                {
+                    imagination = new Imagination(-1.0f, 1.0f);
+                }else
+                {
+                    imagination = new Imagination(0.0f, 1.0f);
+                }
                 imagination.setName("Imagination Thread " + Math.round(Math.random()*1000.0));
                 imagination.start();
                 progressBarTraining.setProgress(neuralNetwork.getImaginationProgress());
@@ -227,8 +254,7 @@ public class AppFunctions {
         Timeline timelineRefresh = new Timeline(new KeyFrame(Duration.millis(250), event -> {
             buttonFile.setDisable(neuralNetwork != null
                     && (neuralNetwork.isNetTraining()
-                        || update
-                        || neuralNetwork.isNetTraining()));
+                        || update));
 
             if(neuralNetwork != null)
             {
@@ -247,6 +273,40 @@ public class AppFunctions {
                 pane.getChildren().remove(progressBarTraining);
                 enableActionButtons();
                 enableSlidersAndTextFields();
+
+                if(checkBoxChart.isSelected())
+                {
+                    ArrayList<XYChart.Series<Number, Number>> neuralChartSeries = new ArrayList<>();
+                    neuralChartSeries.add(new XYChart.Series<>());
+                    if(neuralNetwork.neuralNetParameters.topology.get(0) < 2000)
+                    {
+                        for (int neuron = 0; neuron < neuralNetwork.neuralNetParameters.topology.get(0); neuron++)
+                            neuralChartSeries.get(0).getData().add(new XYChart.Data<>(neuron + 1, neuralNetwork.getNeuronOutput(0, neuron)));
+                    }else
+                    {
+                        int step = neuralNetwork.neuralNetParameters.topology.get(0) % 2000;
+                        for (int neuron = 0; neuron < neuralNetwork.neuralNetParameters.topology.get(0); neuron+=step)
+                            neuralChartSeries.get(0).getData().add(new XYChart.Data<>(neuron + 1, neuralNetwork.getNeuronOutput(0, neuron)));
+                    }
+
+                    for (int layer = 1; layer < neuralNetwork.neuralNetParameters.topology.size(); layer++) {
+                        neuralChartSeries.add(new XYChart.Series<>());
+                        for (int neuron = 0; neuron < neuralNetwork.neuralNetParameters.topology.get(layer); neuron++)
+                            neuralChartSeries.get(layer).getData().add(new XYChart.Data<>(neuron + 1, neuralNetwork.getNeuronOutput(layer, neuron)));
+                    }
+                    int maximumIndex = findMaximumValueIndex(neuralNetwork.neuralNetParameters.result);
+                    DecimalFormat df = new DecimalFormat("##.##");
+                    String chartClassifierMatch = df.format(neuralNetwork.neuralNetParameters.result.get(maximumIndex) * 100.0) + "%";
+                    new NeuralCharts(stageReference, neuralChartSeries, labelOutputs, "Imagination result", chartClassifierMatch);
+                }
+
+                if(checkBoxCSV.isSelected())
+                {
+                    SaveCSV saveCSV = new SaveCSV();
+                    saveCSV.setName("Save CSV " + Math.round(Math.random()*1000.0f));
+                    saveCSV.start();
+                }
+
                 customPrompt("Imagination",
                         "Imagination finished with " + neuralNetwork.getImaginationProgress()*100.0f + " % matching criteria.",
                         Alert.AlertType.INFORMATION);
@@ -302,6 +362,73 @@ public class AppFunctions {
         timelineRefresh.play();
     }
 
+    public static String generateFilename(String name) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String dateAndTime = dateFormat.format(new Date());
+        return name + "_" + dateAndTime + ".csv";
+    }
+
+    public static class SaveCSV extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            String[] strings = labelTopologyFile.getText().split("topology_");
+            String filename = generateFilename(strings[1].replace(".txt", ""));
+            File fileOut = new File(filename);
+            try {
+                fileOut.createNewFile();
+                FileWriter writer = new FileWriter(fileOut, true);
+                writer.append("IN;OUT\n");
+
+                int maxLines = 0;
+                if(neuralNetwork.neuralNetParameters.inputNodes >
+                        neuralNetwork.neuralNetParameters.outputNodes)
+                {
+                    maxLines = neuralNetwork.neuralNetParameters.inputNodes;
+                }else
+                {
+                    maxLines = neuralNetwork.neuralNetParameters.outputNodes;
+                }
+
+                for(int i=0; i<maxLines; i++)
+                {
+                    boolean hasIn = false;
+                    boolean hasOut = false;
+                    float inValue = -99f;
+                    float outValue = -99f;
+                    if(i < neuralNetwork.neuralNetParameters.inputNodes)
+                    {
+                        inValue = neuralNetwork.neuralNetParameters.input.get(i);
+                        hasIn = true;
+                    }
+
+                    if(i < neuralNetwork.neuralNetParameters.outputNodes)
+                    {
+                        outValue = neuralNetwork.neuralNetParameters.result.get(i);
+                        hasOut = true;
+                    }
+
+                    if(hasIn && hasOut)
+                    {
+                        writer.append(inValue + ";" + outValue + "\n");
+                    }else if(hasIn && !hasOut)
+                    {
+                        writer.append(inValue + ";\n");
+                    }else if(!hasIn && hasOut)
+                    {
+                        writer.append(";" + outValue + "\n");
+                    }
+                }
+
+                writer.close();
+            } catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
     private static void loadLabels(@NotNull String trainingFilePath)
     {
         ArrayList<String> fileContent = readOrCreateFile(trainingFilePath);
@@ -344,6 +471,9 @@ public class AppFunctions {
 
     private static void disableActionButtons()
     {
+        checkBoxChart.setDisable(true);
+        checkBoxRange.setDisable(true);
+        checkBoxCSV.setDisable(true);
         buttonTrain.setDisable(true);
         buttonRandomRun.setDisable(true);
         buttonImagine.setDisable(true);
@@ -351,6 +481,9 @@ public class AppFunctions {
 
     private static void enableActionButtons()
     {
+        checkBoxChart.setDisable(false);
+        checkBoxRange.setDisable(false);
+        checkBoxCSV.setDisable(false);
         buttonTrain.setDisable(false);
         buttonRandomRun.setDisable(false);
         buttonImagine.setDisable(false);
@@ -597,7 +730,7 @@ public class AppFunctions {
             neuralNetwork.neuralNetParameters.result.add(0.0f);
             int finalL = l;
             sliderOutputs.get(l).valueProperty().addListener(observable -> {
-                //neuralNetwork.neuralNetParameters.result.set(finalL, (float)sliderOutputs.get(finalL).getValue());
+                neuralNetwork.neuralNetParameters.result.set(finalL, (float)sliderOutputs.get(finalL).getValue());
                 textFieldOutputs.get(finalL).setText(String.format("%.3f", sliderOutputs.get(finalL).getValue()).replace(",", "."));
             });
 
@@ -617,7 +750,7 @@ public class AppFunctions {
                         }
 
                         sliderOutputs.get(finalL).setValue(value);
-                        //neuralNetwork.neuralNetParameters.result.set(finalL, value);
+                        neuralNetwork.neuralNetParameters.result.set(finalL, value);
                     }catch (Exception e)
                     {
                         textFieldOutputs.get(finalL).setText("");
@@ -694,6 +827,15 @@ public class AppFunctions {
 
         labelWeightsFile.setLayoutX(stageWidth*0.12);
         labelWeightsFile.setLayoutY(stageHeight*0.14);
+
+        checkBoxRange.setLayoutX(stageWidth*0.65);
+        checkBoxRange.setLayoutY(stageHeight*0.05);
+
+        checkBoxChart.setLayoutX(stageWidth*0.65);
+        checkBoxChart.setLayoutY(stageHeight*0.10);
+
+        checkBoxCSV.setLayoutX(stageWidth*0.65);
+        checkBoxCSV.setLayoutY(stageHeight*0.15);
 
         buttonTrain.setLayoutX(stageWidth*0.85);
         buttonTrain.setLayoutY(stageHeight*0.05);
@@ -855,6 +997,17 @@ public class AppFunctions {
             updateInputSliders = true;
             enableActionButtons();
         }
+    }
+
+    public static int findMaximumValueIndex(ArrayList<Float> values)
+    {
+        int maximumIndex = 0;
+        for(int i=0; i<values.size(); i++)
+        {
+            if(values.get(i) > values.get(maximumIndex))
+                maximumIndex = i;
+        }
+        return maximumIndex;
     }
 
     public static void createDirectoryIfNotExist(String directoryName)
