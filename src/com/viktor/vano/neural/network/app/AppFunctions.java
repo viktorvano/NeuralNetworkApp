@@ -486,6 +486,7 @@ public class AppFunctions {
         checkBoxChart.setDisable(true);
         checkBoxRange.setDisable(true);
         checkBoxCSV.setDisable(true);
+        buttonSnapshot.setDisable(true);
         buttonTrain.setDisable(true);
         buttonRandomRun.setDisable(true);
         buttonImagine.setDisable(true);
@@ -496,6 +497,7 @@ public class AppFunctions {
         checkBoxChart.setDisable(false);
         checkBoxRange.setDisable(false);
         checkBoxCSV.setDisable(false);
+        buttonSnapshot.setDisable(false);
         buttonTrain.setDisable(false);
         buttonRandomRun.setDisable(false);
         buttonImagine.setDisable(false);
