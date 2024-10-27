@@ -171,6 +171,11 @@ public class AppFunctions {
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Topology file", "topology*"));
 
+        checkBoxSnapshotChart = new CheckBox("Snapshot Chart");
+        checkBoxSnapshotChart.setLayoutX(stageWidth*0.65);
+        checkBoxSnapshotChart.setLayoutY(stageHeight*0.01);
+        pane.getChildren().add(checkBoxSnapshotChart);
+
         checkBoxRange = new CheckBox("☐ 0..1 / ☑ -1..1");
         checkBoxRange.setLayoutX(stageWidth*0.65);
         checkBoxRange.setLayoutY(stageHeight*0.05);
@@ -178,12 +183,12 @@ public class AppFunctions {
 
         checkBoxChart = new CheckBox("Imagination Chart");
         checkBoxChart.setLayoutX(stageWidth*0.65);
-        checkBoxChart.setLayoutY(stageHeight*0.10);
+        checkBoxChart.setLayoutY(stageHeight*0.09);
         pane.getChildren().add(checkBoxChart);
 
         checkBoxCSV = new CheckBox("Imagination CSV");
         checkBoxCSV.setLayoutX(stageWidth*0.65);
-        checkBoxCSV.setLayoutY(stageHeight*0.15);
+        checkBoxCSV.setLayoutY(stageHeight*0.13);
         pane.getChildren().add(checkBoxCSV);
 
         buttonSnapshot = new Button("I/O CSV Snapshot");
@@ -193,7 +198,35 @@ public class AppFunctions {
         buttonSnapshot.setOnAction(event -> {
             if(neuralNetwork != null)
             {
+                if(checkBoxSnapshotChart.isSelected())
+                {
+                    ArrayList<XYChart.Series<Number, Number>> neuralChartSeries = new ArrayList<>();
+                    neuralChartSeries.add(new XYChart.Series<>());
+                    if(neuralNetwork.neuralNetParameters.topology.get(0) < 2000)
+                    {
+                        for (int neuron = 0; neuron < neuralNetwork.neuralNetParameters.topology.get(0); neuron++)
+                            neuralChartSeries.get(0).getData().add(new XYChart.Data<>(neuron + 1, neuralNetwork.getNeuronOutput(0, neuron)));
+                    }else
+                    {
+                        int step = neuralNetwork.neuralNetParameters.topology.get(0) % 2000;
+                        for (int neuron = 0; neuron < neuralNetwork.neuralNetParameters.topology.get(0); neuron+=step)
+                            neuralChartSeries.get(0).getData().add(new XYChart.Data<>(neuron + 1, neuralNetwork.getNeuronOutput(0, neuron)));
+                    }
 
+                    for (int layer = 1; layer < neuralNetwork.neuralNetParameters.topology.size(); layer++) {
+                        neuralChartSeries.add(new XYChart.Series<>());
+                        for (int neuron = 0; neuron < neuralNetwork.neuralNetParameters.topology.get(layer); neuron++)
+                            neuralChartSeries.get(layer).getData().add(new XYChart.Data<>(neuron + 1, neuralNetwork.getNeuronOutput(layer, neuron)));
+                    }
+                    int maximumIndex = findMaximumValueIndex(neuralNetwork.neuralNetParameters.result);
+                    DecimalFormat df = new DecimalFormat("##.##");
+                    String chartClassifierMatch = df.format(neuralNetwork.neuralNetParameters.result.get(maximumIndex) * 100.0) + "%";
+                    new NeuralCharts(stageReference, neuralChartSeries, labelOutputs, "Imagination result", chartClassifierMatch);
+                }
+
+                SaveCSV saveCSV = new SaveCSV();
+                saveCSV.setName("Save CSV " + Math.round(Math.random()*1000.0f));
+                saveCSV.start();
             }
         });
         pane.getChildren().add(buttonSnapshot);
@@ -842,14 +875,17 @@ public class AppFunctions {
         labelWeightsFile.setLayoutX(stageWidth*0.12);
         labelWeightsFile.setLayoutY(stageHeight*0.14);
 
+        checkBoxSnapshotChart.setLayoutX(stageWidth*0.65);
+        checkBoxSnapshotChart.setLayoutY(stageHeight*0.01);
+
         checkBoxRange.setLayoutX(stageWidth*0.65);
         checkBoxRange.setLayoutY(stageHeight*0.05);
 
         checkBoxChart.setLayoutX(stageWidth*0.65);
-        checkBoxChart.setLayoutY(stageHeight*0.10);
+        checkBoxChart.setLayoutY(stageHeight*0.09);
 
         checkBoxCSV.setLayoutX(stageWidth*0.65);
-        checkBoxCSV.setLayoutY(stageHeight*0.15);
+        checkBoxCSV.setLayoutY(stageHeight*0.13);
 
         buttonSnapshot.setLayoutX(stageWidth*0.84);
         buttonSnapshot.setLayoutY(stageHeight*0.01);
