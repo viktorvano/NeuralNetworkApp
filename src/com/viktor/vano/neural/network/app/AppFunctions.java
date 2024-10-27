@@ -186,8 +186,20 @@ public class AppFunctions {
         checkBoxCSV.setLayoutY(stageHeight*0.15);
         pane.getChildren().add(checkBoxCSV);
 
+        buttonSnapshot = new Button("I/O CSV Snapshot");
+        buttonSnapshot.setLayoutX(stageWidth*0.84);
+        buttonSnapshot.setLayoutY(stageHeight*0.01);
+        buttonSnapshot.setDisable(true);
+        buttonSnapshot.setOnAction(event -> {
+            if(neuralNetwork != null)
+            {
+
+            }
+        });
+        pane.getChildren().add(buttonSnapshot);
+
         buttonTrain = new Button("Train");
-        buttonTrain.setLayoutX(stageWidth*0.85);
+        buttonTrain.setLayoutX(stageWidth*0.84);
         buttonTrain.setLayoutY(stageHeight*0.05);
         buttonTrain.setDisable(true);
         buttonTrain.setOnAction(event -> {
@@ -207,8 +219,8 @@ public class AppFunctions {
         pane.getChildren().add(buttonTrain);
 
         buttonRandomRun = new Button("Random Run");
-        buttonRandomRun.setLayoutX(stageWidth*0.85);
-        buttonRandomRun.setLayoutY(stageHeight*0.10);
+        buttonRandomRun.setLayoutX(stageWidth*0.84);
+        buttonRandomRun.setLayoutY(stageHeight*0.09);
         buttonRandomRun.setDisable(true);
         buttonRandomRun.setOnAction(event -> {
             if(neuralNetwork != null)
@@ -219,8 +231,8 @@ public class AppFunctions {
         pane.getChildren().add(buttonRandomRun);
 
         buttonImagine = new Button("Imagine");
-        buttonImagine.setLayoutX(stageWidth*0.85);
-        buttonImagine.setLayoutY(stageHeight*0.15);
+        buttonImagine.setLayoutX(stageWidth*0.84);
+        buttonImagine.setLayoutY(stageHeight*0.13);
         buttonImagine.setDisable(true);
         buttonImagine.setOnAction(event -> {
             if(neuralNetwork != null
@@ -837,14 +849,17 @@ public class AppFunctions {
         checkBoxCSV.setLayoutX(stageWidth*0.65);
         checkBoxCSV.setLayoutY(stageHeight*0.15);
 
-        buttonTrain.setLayoutX(stageWidth*0.85);
+        buttonSnapshot.setLayoutX(stageWidth*0.84);
+        buttonSnapshot.setLayoutY(stageHeight*0.01);
+
+        buttonTrain.setLayoutX(stageWidth*0.84);
         buttonTrain.setLayoutY(stageHeight*0.05);
 
-        buttonRandomRun.setLayoutX(stageWidth*0.85);
-        buttonRandomRun.setLayoutY(stageHeight*0.10);
+        buttonRandomRun.setLayoutX(stageWidth*0.84);
+        buttonRandomRun.setLayoutY(stageHeight*0.09);
 
-        buttonImagine.setLayoutX(stageWidth*0.85);
-        buttonImagine.setLayoutY(stageHeight*0.15);
+        buttonImagine.setLayoutX(stageWidth*0.84);
+        buttonImagine.setLayoutY(stageHeight*0.13);
 
         progressBarTraining.setPrefWidth(0.8*stageWidth);
         progressBarTraining.setLayoutX(0.1*stageWidth);
